@@ -24,7 +24,17 @@ function NavItem({ active, children, onClick }: NavItemProps) {
   );
 }
 
-export function AppSidebar({ view, onNavigate }: { view: NexusView; onNavigate: (view: NexusView) => void }) {
+export function AppSidebar({
+  view,
+  workspaceToolId,
+  onNavigate,
+  onActivateWorkspaceTool
+}: {
+  view: NexusView;
+  workspaceToolId: string;
+  onNavigate: (view: NexusView) => void;
+  onActivateWorkspaceTool: (toolId: string) => void;
+}) {
   return (
     <aside className="app-sidebar">
       <div className="nav-group">
@@ -38,17 +48,36 @@ export function AppSidebar({ view, onNavigate }: { view: NexusView; onNavigate: 
 
       <div className="nav-group">
         <div className="nav-heading">工程开发</div>
-        <NavItem active={view === "workspace"} onClick={() => onNavigate("workspace")}>
+        <NavItem
+          active={view === "workspace" && workspaceToolId === "workspace.json"}
+          onClick={() => onActivateWorkspaceTool("workspace.json")}
+        >
           JSON 处理器
         </NavItem>
-        <NavItem>SQL 格式化</NavItem>
+        <NavItem
+          active={view === "workspace" && workspaceToolId === "tool.sql"}
+          onClick={() => onActivateWorkspaceTool("tool.sql")}
+        >
+          SQL 格式化
+        </NavItem>
+        <NavItem
+          active={view === "workspace" && workspaceToolId === "tool.regex"}
+          onClick={() => onActivateWorkspaceTool("tool.regex")}
+        >
+          正则解释器
+        </NavItem>
         <NavItem>JWT 调试器</NavItem>
         <NavItem>Base64 编解码</NavItem>
       </div>
 
       <div className="nav-group">
         <div className="nav-heading">媒体资产</div>
-        <NavItem>图片压缩</NavItem>
+        <NavItem
+          active={view === "workspace" && workspaceToolId === "tool.image"}
+          onClick={() => onActivateWorkspaceTool("tool.image")}
+        >
+          图片压缩
+        </NavItem>
         <NavItem>SVG 优化</NavItem>
       </div>
 

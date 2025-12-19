@@ -611,3 +611,66 @@ button.palette-item {
 button.palette-item-primary {
   background: #f4f4f5;
 }
+
+/* Image Tool */
+.image-list {
+  flex: 1;
+  padding: 16px;
+  overflow: auto;
+  background: #f8f8f9;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.image-list.is-processing {
+  opacity: 0.85;
+}
+
+.image-empty {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.image-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.image-thumb {
+  width: 96px;
+  height: 72px;
+  object-fit: contain;
+  background: #f4f4f5;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.image-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.image-meta {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.image-actions {
+  display: flex;
+  align-items: center;
+}

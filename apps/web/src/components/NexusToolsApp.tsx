@@ -14,6 +14,7 @@ export type NexusView = "home" | "workspace";
 export function NexusToolsApp() {
   const [view, setView] = useState<NexusView>("home");
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [workspaceToolId, setWorkspaceToolId] = useState<string>("workspace.json");
 
   const openPalette = useCallback(() => setPaletteOpen(true), []);
   const closePalette = useCallback(() => setPaletteOpen(false), []);
@@ -26,6 +27,9 @@ export function NexusToolsApp() {
   const activateTool = useCallback(
     (tool: ToolItem) => {
       if (tool.route.type === "view") {
+        if (tool.route.view === "workspace") {
+          setWorkspaceToolId(tool.id);
+        }
         showView(tool.route.view);
       }
     },
@@ -61,7 +65,15 @@ export function NexusToolsApp() {
     <>
       <div className="app-shell">
         <AppHeader onOpenPalette={openPalette} />
-        <AppSidebar view={view} onNavigate={showView} />
+        <AppSidebar
+          view={view}
+          workspaceToolId={workspaceToolId}
+          onNavigate={showView}
+          onActivateWorkspaceTool={(id) => {
+            setWorkspaceToolId(id);
+            showView("workspace");
+          }}
+        />
 
         <main className="app-main">
           <section className={`view-pane ${view === "home" ? "active" : ""}`} aria-hidden={view !== "home"}>
@@ -73,6 +85,7 @@ export function NexusToolsApp() {
             aria-hidden={view !== "workspace"}
           >
             <WorkspaceView
+              toolId={workspaceToolId}
               onRequestRun={(fn) => {
                 runWorkspaceRef.current = fn;
               }}

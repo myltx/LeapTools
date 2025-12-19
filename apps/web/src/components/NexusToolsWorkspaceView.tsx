@@ -1,12 +1,44 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { LetterCaseConverter } from "@/components/LetterCaseConverter";
+import { ImageCompressorWorkspaceView } from "@/components/ImageCompressor";
+import { RegexExplorerWorkspaceView } from "@/components/RegexExplorer";
+import { SqlFormatterWorkspaceView } from "@/components/SqlFormatter";
 import type { JsonProcessorOptions } from "@/lib/jsonProcessor";
 import { runJsonProcessor } from "@/lib/jsonProcessor";
 
 type OutputState = "idle" | "processing" | "success" | "error";
 
-export function WorkspaceView({ onRequestRun }: { onRequestRun: (fn: () => void) => void }) {
+export function WorkspaceView({ toolId, onRequestRun }: { toolId: string; onRequestRun: (fn: () => void) => void }) {
+  if (toolId === "workspace.letter-case") {
+    return <LetterCaseWorkspaceView onRequestRun={onRequestRun} />;
+  }
+
+  if (toolId === "tool.sql") {
+    return <SqlFormatterWorkspaceView onRequestRun={onRequestRun} />;
+  }
+
+  if (toolId === "tool.regex") {
+    return <RegexExplorerWorkspaceView onRequestRun={onRequestRun} />;
+  }
+
+  if (toolId === "tool.image") {
+    return <ImageCompressorWorkspaceView onRequestRun={onRequestRun} />;
+  }
+
+  return <JsonProcessorWorkspaceView onRequestRun={onRequestRun} />;
+}
+
+function LetterCaseWorkspaceView({ onRequestRun }: { onRequestRun: (fn: () => void) => void }) {
+  useEffect(() => {
+    onRequestRun(() => {});
+  }, [onRequestRun]);
+
+  return <LetterCaseConverter />;
+}
+
+function JsonProcessorWorkspaceView({ onRequestRun }: { onRequestRun: (fn: () => void) => void }) {
   const [indent, setIndent] = useState<2 | 4 | 0>(4);
   const [sortKeys, setSortKeys] = useState(true);
   const [escapeUnicode, setEscapeUnicode] = useState(false);
