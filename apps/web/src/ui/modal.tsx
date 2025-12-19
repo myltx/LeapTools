@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import {
   Modal,
   ModalBody,
@@ -17,6 +17,8 @@ export type DialogProps = {
   footer?: ReactNode | ((ctx: { onClose: () => void }) => ReactNode);
   size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "full";
   dismissable?: boolean;
+  className?: string;
+  style?: CSSProperties;
 };
 
 export function Dialog({
@@ -26,11 +28,13 @@ export function Dialog({
   children,
   footer,
   size = "md",
-  dismissable = true
+  dismissable = true,
+  className,
+  style
 }: DialogProps) {
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} size={size} isDismissable={dismissable}>
-      <ModalContent>
+      <ModalContent {...(className === undefined ? {} : { className })} {...(style === undefined ? {} : { style })}>
         {(onClose) => (
           <>
             {title ? <ModalHeader>{title}</ModalHeader> : null}

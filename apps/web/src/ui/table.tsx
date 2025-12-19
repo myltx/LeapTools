@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import {
   Table as NextUITable,
   TableBody,
@@ -21,11 +21,16 @@ export type TableProps<T extends object> = {
   rows: T[];
   rowKey: (row: T) => string;
   className?: string;
+  style?: CSSProperties;
 };
 
-export function Table<T extends object>({ columns, rows, rowKey, className }: TableProps<T>) {
+export function Table<T extends object>({ columns, rows, rowKey, className, style }: TableProps<T>) {
   return (
-    <NextUITable aria-label="table" {...(className === undefined ? {} : { className })}>
+    <NextUITable
+      aria-label="table"
+      {...(className === undefined ? {} : { className })}
+      {...(style === undefined ? {} : { style })}
+    >
       <TableHeader columns={columns}>
         {(col) => <TableColumn key={col.key}>{col.title}</TableColumn>}
       </TableHeader>

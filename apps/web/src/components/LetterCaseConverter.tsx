@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button, Checkbox, Select, Textarea } from "@/ui";
+import { Accordion, Button, Checkbox, Select, Textarea } from "@/ui";
 
 /**
  * 转换类型（与需求里的 key 保持一致，方便后续接入配置/埋点/快捷键等）。
@@ -701,27 +701,34 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
 
             <div className="control-group">
               <label>使用说明</label>
-              <details
-                open
-                style={{
-                  border: "1px solid var(--border-subtle)",
-                  borderRadius: 12,
-                  background: "rgba(255,255,255,0.7)",
-                  padding: "10px 12px"
-                }}
-              >
-                <summary style={{ cursor: "pointer", fontSize: 12, fontWeight: 700, color: "var(--text-main)" }}>
-                  如何使用
-                </summary>
-                <ol style={{ margin: "10px 0 0", paddingLeft: 18, fontSize: 12, color: "var(--text-secondary)" }}>
-                  <li>在“输入”里粘贴/键入文本；转换会自动执行。</li>
-                  <li>在“转换操作”选择规则（大小写 / 格式互转 / 清理）。</li>
-                  <li>勾选“显示新文本框”时，结果会出现在右侧/下方并且可编辑；不勾选时会直接写回输入框。</li>
-                  <li>勾选“自动复制结果到剪贴板”后，结果变化会自动复制（带轻量延迟，避免频繁写入）。</li>
-                  <li>需要统一专有名词大小写时，在“自定义词库”里每行填一个词（如 iPhone、OpenAI、API）。</li>
-                  <li>顶部按钮提供“复制/剪切/清空”输入与结果。</li>
-                </ol>
-              </details>
+              <Accordion
+                defaultExpandedKeys={["how-to"]}
+                items={[
+                  {
+                    key: "how-to",
+                    title: "如何使用",
+                    content: (
+                      <ol
+                        style={{
+                          margin: "10px 0 0",
+                          paddingLeft: 18,
+                          fontSize: 12,
+                          color: "var(--text-secondary)"
+                        }}
+                      >
+                        <li>在“输入”里粘贴/键入文本；转换会自动执行。</li>
+                        <li>在“转换操作”选择规则（大小写 / 格式互转 / 清理）。</li>
+                        <li>
+                          勾选“显示新文本框”时，结果会出现在右侧/下方并且可编辑；不勾选时会直接写回输入框。
+                        </li>
+                        <li>勾选“自动复制结果到剪贴板”后，结果变化会自动复制（带轻量延迟，避免频繁写入）。</li>
+                        <li>需要统一专有名词大小写时，在“自定义词库”里每行填一个词（如 iPhone、OpenAI、API）。</li>
+                        <li>顶部按钮提供“复制/剪切/清空”输入与结果。</li>
+                      </ol>
+                    )
+                  }
+                ]}
+              />
             </div>
 
             <div className="control-group">

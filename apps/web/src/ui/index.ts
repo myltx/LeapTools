@@ -35,3 +35,9 @@ export type { TableColumn, TableProps } from "./table";
 
 export { Link } from "./link";
 export type { LinkProps } from "./link";
+
+export { Accordion } from "./accordion";
+export type { AccordionItem, AccordionProps } from "./accordion";
+
+export { HiddenFileInput } from "./hidden-file-input";
+export type { HiddenFileInputProps } from "./hidden-file-input";

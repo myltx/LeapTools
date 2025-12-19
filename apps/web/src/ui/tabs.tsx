@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Tab, Tabs as NextUITabs } from "@nextui-org/react";
 
 export type TabsItem = {
@@ -14,9 +14,10 @@ export type TabsProps = {
   onSelectionChange: (key: string) => void;
   items: TabsItem[];
   className?: string;
+  style?: CSSProperties;
 };
 
-export function Tabs({ selectedKey, onSelectionChange, items, className }: TabsProps) {
+export function Tabs({ selectedKey, onSelectionChange, items, className, style }: TabsProps) {
   return (
     <NextUITabs
       selectedKey={selectedKey}
@@ -24,6 +25,7 @@ export function Tabs({ selectedKey, onSelectionChange, items, className }: TabsP
         if (typeof k === "string") onSelectionChange(k);
       }}
       {...(className === undefined ? {} : { className })}
+      {...(style === undefined ? {} : { style })}
     >
       {items.map((item) => (
         <Tab key={item.key} title={item.title}>

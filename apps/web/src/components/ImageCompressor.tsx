@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ImageCompressionOptions, ImageOutputFormat } from "@/lib/imageCompressor";
 import { compressImage, formatBytes } from "@/lib/imageCompressor";
-import { Button, ButtonLink, Input, Select, Slider } from "@/ui";
+import { Button, ButtonLink, HiddenFileInput, Input, Select, Slider } from "@/ui";
 
 type OutputState = "idle" | "processing" | "success" | "error";
 
@@ -169,17 +169,13 @@ export function ImageCompressorWorkspaceView({ onRequestRun }: { onRequestRun: (
           <aside className="control-panel">
             <div className="control-group">
               <label>输入文件</label>
-              <input
+              <HiddenFileInput
                 ref={fileInputRef}
-                type="file"
                 accept="image/*"
                 multiple
-                onChange={(e) => {
-                  const list = Array.from(e.target.files ?? []);
+                onFilesSelected={(list) => {
                   setFiles(list);
-                  e.currentTarget.value = "";
                 }}
-                style={{ display: "none" }}
               />
               <Button variant="secondary" type="button" onClick={onPickFiles}>
                 选择文件…

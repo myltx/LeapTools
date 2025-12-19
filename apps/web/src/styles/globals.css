@@ -142,7 +142,7 @@ a:not([class]) {
   width: 32px;
   height: 32px;
   border-radius: 999px;
-  background: #ddd;
+  background: var(--bg-sidebar);
   overflow: hidden;
   border: 1px solid var(--border-subtle);
   display: grid;
@@ -185,7 +185,7 @@ a:not([class]) {
 
 .search-trigger:hover {
   border-color: var(--text-tertiary);
-  background: #f1f1f3;
+  background: var(--bg-workspace);
 }
 
 .shortcut-key {
@@ -234,7 +234,7 @@ a:not([class]) {
 }
 
 .nav-item:hover {
-  background: #ededef;
+  background: var(--bg-workspace);
   color: var(--text-main);
 }
 
@@ -331,7 +331,7 @@ a:not([class]) {
   justify-content: center;
   font-size: 14px;
   font-weight: 700;
-  background: #f4f4f5;
+  background: var(--bg-sidebar);
 }
 
 .tool-tag {
@@ -410,7 +410,7 @@ a:not([class]) {
 .workspace-toolbar {
   height: 48px;
   border-bottom: 1px solid var(--border-subtle);
-  background: #fafafa;
+  background: var(--bg-sidebar);
   display: flex;
   align-items: center;
   padding: 0 16px;
@@ -438,7 +438,7 @@ a:not([class]) {
 /* 参数控制面板 */
 .control-panel {
   border-right: 1px solid var(--border-subtle);
-  background: #fafafa;
+  background: var(--bg-sidebar);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -576,7 +576,7 @@ a:not([class]) {
   font-size: 13px;
   white-space: pre;
   overflow: auto;
-  background: #f8f8f9;
+  background: var(--bg-workspace);
   color: var(--brand-accent);
 }
 
@@ -622,7 +622,7 @@ a:not([class]) {
 .command-palette {
   width: 100%;
   max-width: 540px;
-  background: white;
+  background: var(--bg-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-float);
   overflow: hidden;
@@ -651,7 +651,7 @@ button.palette-item {
 }
 
 button.palette-item-primary {
-  background: #f4f4f5;
+  background: var(--bg-sidebar);
 }
 
 /* Image Tool */
@@ -659,7 +659,7 @@ button.palette-item-primary {
   flex: 1;
   padding: 16px;
   overflow: auto;
-  background: #f8f8f9;
+  background: var(--bg-workspace);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -690,7 +690,7 @@ button.palette-item-primary {
   width: 96px;
   height: 72px;
   object-fit: contain;
-  background: #f4f4f5;
+  background: var(--bg-sidebar);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
 }

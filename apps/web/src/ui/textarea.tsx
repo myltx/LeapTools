@@ -1,6 +1,6 @@
 "use client";
 
-import type { ChangeEventHandler } from "react";
+import type { CSSProperties, ChangeEventHandler } from "react";
 import { forwardRef } from "react";
 import { Textarea as NextUITextarea } from "@nextui-org/react";
 
@@ -12,12 +12,24 @@ export type TextareaProps = {
   minRows?: number;
   maxRows?: number;
   className?: string;
+  style?: CSSProperties;
   inputClassName?: string;
   inputWrapperClassName?: string;
 };
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
-  { value, onChange, placeholder, disabled, minRows, maxRows, className, inputClassName, inputWrapperClassName },
+  {
+    value,
+    onChange,
+    placeholder,
+    disabled,
+    minRows,
+    maxRows,
+    className,
+    style,
+    inputClassName,
+    inputWrapperClassName
+  },
   ref
 ) {
   const fallbackAriaLabel =
@@ -34,6 +46,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
       {...(minRows === undefined ? {} : { minRows })}
       {...(maxRows === undefined ? {} : { maxRows })}
       {...(className === undefined ? {} : { className })}
+      {...(style === undefined ? {} : { style })}
       classNames={{
         input: inputClassName,
         inputWrapper: inputWrapperClassName
