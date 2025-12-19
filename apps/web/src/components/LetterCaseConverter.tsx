@@ -633,35 +633,11 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
               />
 
               {/* 使用说明：针对当前操作的简要解释与示例 */}
-              <div
-                style={{
-                  marginTop: 10,
-                  padding: "10px 12px",
-                  borderRadius: 12,
-                  border: "1px solid var(--border-subtle)",
-                  background: "rgba(255,255,255,0.7)"
-                }}
-              >
-                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-main)" }}>
-                  当前操作：{operationHelp.title}
-                </div>
-                <div style={{ marginTop: 6, fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.5 }}>
-                  {operationHelp.description}
-                </div>
-                <div style={{ marginTop: 10, fontSize: 12, color: "var(--text-secondary)" }}>示例：</div>
-                <pre
-                  style={{
-                    margin: "6px 0 0",
-                    padding: "10px 12px",
-                    borderRadius: 10,
-                    background: "rgba(0,0,0,0.04)",
-                    border: "1px solid rgba(0,0,0,0.06)",
-                    whiteSpace: "pre-wrap",
-                    wordBreak: "break-word",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 12
-                  }}
-                >
+              <div className="help-card">
+                <div className="help-card-title">当前操作：{operationHelp.title}</div>
+                <div className="help-card-desc">{operationHelp.description}</div>
+                <div className="help-card-label">示例：</div>
+                <pre className="help-card-pre">
                   {`输入:  ${operationHelp.sampleInput}\n输出:  ${operationSample.base}${
                     operationSample.hasDictEffect ? `\n词库:  ${operationSample.withDict}` : ""
                   }`}
@@ -708,14 +684,7 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
                     key: "how-to",
                     title: "如何使用",
                     content: (
-                      <ol
-                        style={{
-                          margin: "10px 0 0",
-                          paddingLeft: 18,
-                          fontSize: 12,
-                          color: "var(--text-secondary)"
-                        }}
-                      >
+                      <ol className="help-list">
                         <li>在“输入”里粘贴/键入文本；转换会自动执行。</li>
                         <li>在“转换操作”选择规则（大小写 / 格式互转 / 清理）。</li>
                         <li>
@@ -754,9 +723,7 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
                 minRows={6}
                 inputClassName="dictionary-input"
               />
-              <div style={{ marginTop: 8, fontSize: 12, color: "var(--text-secondary)" }}>
-                已解析 {dictionaryWords.length} 个词条（大小写不敏感匹配）
-              </div>
+              <div className="help-hint">已解析 {dictionaryWords.length} 个词条（大小写不敏感匹配）</div>
             </div>
           </aside>
 

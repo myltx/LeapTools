@@ -76,12 +76,15 @@ export function NexusToolsApp() {
         />
 
         <main className="app-main">
-          <section className={`view-pane ${view === "home" ? "active" : ""}`} aria-hidden={view !== "home"}>
+          <section
+            className={`view-pane view-pane-home ${view === "home" ? "active" : ""}`}
+            aria-hidden={view !== "home"}
+          >
             <HomeView onActivateTool={activateTool} />
           </section>
 
           <section
-            className={`view-pane ${view === "workspace" ? "active" : ""}`}
+            className={`view-pane view-pane-workspace ${view === "workspace" ? "active" : ""}`}
             aria-hidden={view !== "workspace"}
           >
             <WorkspaceView
