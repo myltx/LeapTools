@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Accordion, Button, Checkbox, Select, Textarea } from "@/ui";
+import { Accordion, Button, Checkbox, Tabs, Textarea } from "@/ui";
 
 /**
  * 转换类型（与需求里的 key 保持一致，方便后续接入配置/埋点/快捷键等）。
@@ -178,6 +178,41 @@ const TITLE_CASE_MINOR_WORDS = new Set(
     "onto"
   ].map((w) => w.toLowerCase()),
 );
+
+type OperationGroupKey = "case" | "format" | "cleanup";
+
+const OPERATION_GROUPS: Array<{
+  key: OperationGroupKey;
+  title: string;
+  operations: LetterCaseOperation[];
+}> = [
+  {
+    key: "case",
+    title: "大小写转换",
+    operations: ["upper_case", "lower_case", "word_case", "word_lower_case", "sentence_case", "title_case"]
+  },
+  {
+    key: "format",
+    title: "格式转换",
+    operations: [
+      "space_to_underscore",
+      "underscore_to_space",
+      "space_to_camel",
+      "camel_to_space",
+      "space_to_kebab",
+      "kebab_to_space",
+      "space_to_newline",
+      "newline_to_space",
+      "space_to_dot",
+      "dot_to_space"
+    ]
+  },
+  {
+    key: "cleanup",
+    title: "清理操作",
+    operations: ["del_punctuation", "del_blank", "del_linebreak"]
+  }
+];
 
 /**
  * 将自定义词库解析为「规范写法」数组：
@@ -464,6 +499,7 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
 
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
+  const [panelTab, setPanelTab] = useState<"operation" | "output" | "dictionary" | "help">("operation");
 
   // 尝试在“输出到原文本框”模式下保留光标位置（长度变化时做 clamp）
   useEffect(() => {
@@ -512,28 +548,76 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
     }
   }, []);
 
-  const onCutInput = useCallback(async () => {
-    if (!inputText) return;
-    await onCopy(inputText);
-    setInputText("");
-    if (showNewTextarea) setOutputText("");
-  }, [inputText, onCopy, showNewTextarea]);
+  const saveSelection = useCallback(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    pendingSelectionRef.current = {
+      start: el.selectionStart ?? el.value.length,
+      end: el.selectionEnd ?? el.value.length
+    };
+  }, []);
+
+  const computeConvertedText = useCallback(
+    (text: string, nextOperation = operation, nextDictionaryMap = dictionaryMap) =>
+      convertText({ text, operation: nextOperation, dictionaryMap: nextDictionaryMap }),
+    [dictionaryMap, operation],
+  );
+
+  const applyOperation = useCallback(
+    (nextOperation: LetterCaseOperation) => {
+      setOperation(nextOperation);
+
+      if (showNewTextarea) {
+        setOutputText(computeConvertedText(inputText, nextOperation, dictionaryMap));
+        return;
+      }
+
+      saveSelection();
+      const next = computeConvertedText(inputText, nextOperation, dictionaryMap);
+      if (next !== inputText) setInputText(next);
+    },
+    [computeConvertedText, dictionaryMap, inputText, saveSelection, showNewTextarea],
+  );
+
+  const applyShowNewTextarea = useCallback(
+    (checked: boolean) => {
+      setShowNewTextarea(checked);
+
+      if (checked) {
+        setOutputText(computeConvertedText(inputText, operation, dictionaryMap));
+        return;
+      }
+
+      saveSelection();
+      const next = computeConvertedText(inputText, operation, dictionaryMap);
+      if (next !== inputText) setInputText(next);
+      setOutputText("");
+    },
+    [computeConvertedText, dictionaryMap, inputText, operation, saveSelection],
+  );
+
+  const applyDictionaryText = useCallback(
+    (nextDictionaryText: string) => {
+      setDictionaryText(nextDictionaryText);
+
+      const nextWords = parseCustomDictionary(nextDictionaryText);
+      const nextMap = buildDictionaryMap(nextWords);
+
+      if (showNewTextarea) {
+        setOutputText(computeConvertedText(inputText, operation, nextMap));
+        return;
+      }
+
+      saveSelection();
+      const next = computeConvertedText(inputText, operation, nextMap);
+      if (next !== inputText) setInputText(next);
+    },
+    [computeConvertedText, inputText, operation, saveSelection, showNewTextarea],
+  );
 
   const onClearInput = useCallback(() => {
     setInputText("");
     if (showNewTextarea) setOutputText("");
-  }, [showNewTextarea]);
-
-  const onCutResult = useCallback(async () => {
-    if (!effectiveResultText) return;
-    await onCopy(effectiveResultText);
-    if (showNewTextarea) setOutputText("");
-    else setInputText("");
-  }, [effectiveResultText, onCopy, showNewTextarea]);
-
-  const onClearResult = useCallback(() => {
-    if (showNewTextarea) setOutputText("");
-    else setInputText("");
   }, [showNewTextarea]);
 
   return (
@@ -545,26 +629,10 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
         </div>
 
         <div className="workspace-actions">
-          {/* 功能按钮：复制/剪切/清空（输入与结果各一组） */}
+          {/* 功能按钮：复制结果 / 复制输入 / 清空输入 */}
           <Button
             type="button"
-            variant="secondary"
-            onClick={() => {
-              void onCopy(inputText);
-            }}
-            disabled={!inputText}
-          >
-            复制输入
-          </Button>
-          <Button type="button" variant="secondary" onClick={() => void onCutInput()} disabled={!inputText}>
-            剪切输入
-          </Button>
-          <Button type="button" variant="secondary" onClick={onClearInput} disabled={!inputText}>
-            清空输入
-          </Button>
-
-          <Button
-            type="button"
+            size="sm"
             onClick={() => {
               void onCopy(effectiveResultText);
             }}
@@ -572,11 +640,20 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
           >
             复制结果
           </Button>
-          <Button type="button" variant="secondary" onClick={() => void onCutResult()} disabled={!effectiveResultText}>
-            剪切结果
+
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              void onCopy(inputText);
+            }}
+            disabled={!inputText}
+          >
+            复制输入
           </Button>
-          <Button type="button" variant="secondary" onClick={onClearResult} disabled={!effectiveResultText}>
-            清空结果
+          <Button type="button" variant="secondary" size="sm" onClick={onClearInput} disabled={!inputText}>
+            清空输入
           </Button>
         </div>
       </div>
@@ -592,142 +669,138 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
 
         <div className="workspace-content">
           <aside className="control-panel">
-            <div className="control-group">
-              <label>转换操作</label>
-              {/* 核心交互：选择操作后，自动对输入进行转换 */}
-              <Select
-                value={operation}
-                onChange={(value) => {
-                  const nextOperation = value as LetterCaseOperation;
-                  setOperation(nextOperation);
+            <Tabs
+              selectedKey={panelTab}
+              onSelectionChange={(k) => setPanelTab(k as typeof panelTab)}
+              items={[
+                {
+                  key: "operation",
+                  title: "转换",
+                  content: (
+                    <div className="control-group">
+                      <label>转换操作</label>
+                      <div className="usecase-groups">
+                        {OPERATION_GROUPS.map((group) => (
+                          <div key={group.key} className="usecase-group">
+                            <div className="usecase-group-title">{group.title}</div>
+                            <div className="usecase-group-list">
+                              {group.operations.map((op) => {
+                                const help = OPERATION_HELP[op];
+                                const selected = op === operation;
+                                return (
+                                  <Button
+                                    key={op}
+                                    type="button"
+                                    fullWidth
+                                    size="sm"
+                                    variant={selected ? "primary" : "secondary"}
+                                    appearance={selected ? "flat" : "light"}
+                                    onClick={() => applyOperation(op)}
+                                    style={{ justifyContent: "flex-start" }}
+                                  >
+                                    <div className="usecase-item" aria-current={selected ? "true" : undefined}>
+                                      <div className="usecase-item-title">{help.title}</div>
+                                      <div className="usecase-item-desc">{help.description}</div>
+                                      <div className="usecase-item-meta">{op}</div>
+                                    </div>
+                                  </Button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
 
-                  if (showNewTextarea) {
-                    setOutputText(convertText({ text: inputText, operation: nextOperation, dictionaryMap }));
-                    return;
-                  }
+                      <div className="help-card">
+                        <div className="help-card-title">当前操作：{operationHelp.title}</div>
+                        <div className="help-card-desc">{operationHelp.description}</div>
+                        <div className="help-card-label">示例：</div>
+                        <pre className="help-card-pre">
+                          {`输入:  ${operationHelp.sampleInput}\n输出:  ${operationSample.base}${
+                            operationSample.hasDictEffect ? `\n词库:  ${operationSample.withDict}` : ""
+                          }`}
+                        </pre>
+                      </div>
+                    </div>
+                  )
+                },
+                {
+                  key: "output",
+                  title: "输出",
+                  content: (
+                    <div className="control-group">
+                      <label>输出与复制</label>
+                      <div className="control-options">
+                        <Checkbox className="control-check" checked={showNewTextarea} onCheckedChange={applyShowNewTextarea}>
+                          显示新文本框（结果可编辑）
+                        </Checkbox>
 
-                  const next = convertText({ text: inputText, operation: nextOperation, dictionaryMap });
-                  if (next !== inputText) setInputText(next);
-                }}
-                options={[
-                  { value: "upper_case", label: "大小写转换 · upper_case：全部大写" },
-                  { value: "lower_case", label: "大小写转换 · lower_case：全部小写" },
-                  { value: "word_case", label: "大小写转换 · word_case：每个单词首字母大写" },
-                  { value: "word_lower_case", label: "大小写转换 · word_lower_case：每个单词首字母小写" },
-                  { value: "sentence_case", label: "大小写转换 · sentence_case：句子首字母大写" },
-                  { value: "title_case", label: "大小写转换 · title_case：标题大小写" },
-                  { value: "space_to_underscore", label: "格式转换 · 空格 → 下划线" },
-                  { value: "underscore_to_space", label: "格式转换 · 下划线 → 空格" },
-                  { value: "space_to_camel", label: "格式转换 · 空格 → 驼峰 (camelCase)" },
-                  { value: "camel_to_space", label: "格式转换 · 驼峰 → 空格" },
-                  { value: "space_to_kebab", label: "格式转换 · 空格 → 中横线 (kebab-case)" },
-                  { value: "kebab_to_space", label: "格式转换 · 中横线 → 空格" },
-                  { value: "space_to_newline", label: "格式转换 · 空格 → 换行" },
-                  { value: "newline_to_space", label: "格式转换 · 换行 → 空格" },
-                  { value: "space_to_dot", label: "格式转换 · 空格 → 小数点 (.)" },
-                  { value: "dot_to_space", label: "格式转换 · 小数点 → 空格" },
-                  { value: "del_punctuation", label: "清理操作 · del_punctuation：删除标点/符号" },
-                  { value: "del_blank", label: "清理操作 · del_blank：删除所有空白" },
-                  { value: "del_linebreak", label: "清理操作 · del_linebreak：删除换行" }
-                ]}
-              />
-
-              {/* 使用说明：针对当前操作的简要解释与示例 */}
-              <div className="help-card">
-                <div className="help-card-title">当前操作：{operationHelp.title}</div>
-                <div className="help-card-desc">{operationHelp.description}</div>
-                <div className="help-card-label">示例：</div>
-                <pre className="help-card-pre">
-                  {`输入:  ${operationHelp.sampleInput}\n输出:  ${operationSample.base}${
-                    operationSample.hasDictEffect ? `\n词库:  ${operationSample.withDict}` : ""
-                  }`}
-                </pre>
-              </div>
-            </div>
-
-            <div className="control-group">
-              <label>输出与复制</label>
-              <div className="control-options">
-                {/* 交互：结果输出到原文本框 / 新文本框 */}
-                <Checkbox
-                  className="control-check"
-                  checked={showNewTextarea}
-                  onCheckedChange={(checked) => {
-                    setShowNewTextarea(checked);
-
-                    if (checked) {
-                      setOutputText(convertText({ text: inputText, operation, dictionaryMap }));
-                      return;
-                    }
-
-                    const next = convertText({ text: inputText, operation, dictionaryMap });
-                    if (next !== inputText) setInputText(next);
-                    setOutputText("");
-                  }}
-                >
-                  显示新文本框（结果可编辑）
-                </Checkbox>
-
-                {/* 交互：自动复制结果到剪贴板 */}
-                <Checkbox className="control-check" checked={autoCopy} onCheckedChange={setAutoCopy}>
-                  自动复制结果到剪贴板
-                </Checkbox>
-              </div>
-            </div>
-
-            <div className="control-group">
-              <label>使用说明</label>
-              <Accordion
-                defaultExpandedKeys={["how-to"]}
-                items={[
-                  {
-                    key: "how-to",
-                    title: "如何使用",
-                    content: (
-                      <ol className="help-list">
-                        <li>在“输入”里粘贴/键入文本；转换会自动执行。</li>
-                        <li>在“转换操作”选择规则（大小写 / 格式互转 / 清理）。</li>
-                        <li>
-                          勾选“显示新文本框”时，结果会出现在右侧/下方并且可编辑；不勾选时会直接写回输入框。
-                        </li>
-                        <li>勾选“自动复制结果到剪贴板”后，结果变化会自动复制（带轻量延迟，避免频繁写入）。</li>
-                        <li>需要统一专有名词大小写时，在“自定义词库”里每行填一个词（如 iPhone、OpenAI、API）。</li>
-                        <li>顶部按钮提供“复制/剪切/清空”输入与结果。</li>
-                      </ol>
-                    )
-                  }
-                ]}
-              />
-            </div>
-
-            <div className="control-group">
-              <label>自定义词库（影响 Word/Sentence/Title）</label>
-              <Textarea
-                value={dictionaryText}
-                onChange={(e) => {
-                  const nextDictionaryText = e.target.value;
-                  setDictionaryText(nextDictionaryText);
-
-                  const nextWords = parseCustomDictionary(nextDictionaryText);
-                  const nextMap = buildDictionaryMap(nextWords);
-
-                  if (showNewTextarea) {
-                    setOutputText(convertText({ text: inputText, operation, dictionaryMap: nextMap }));
-                    return;
-                  }
-
-                  const next = convertText({ text: inputText, operation, dictionaryMap: nextMap });
-                  if (next !== inputText) setInputText(next);
-                }}
-                placeholder={"每行一个词（保持你希望的规范大小写）\n例如：iPhone / OpenAI / API"}
-                minRows={6}
-                inputClassName="dictionary-input"
-              />
-              <div className="help-hint">已解析 {dictionaryWords.length} 个词条（大小写不敏感匹配）</div>
-            </div>
+                        <Checkbox className="control-check" checked={autoCopy} onCheckedChange={setAutoCopy}>
+                          自动复制结果到剪贴板
+                        </Checkbox>
+                        {!showNewTextarea ? (
+                          <div className="help-hint">
+                            当前为“输入/输出同一文本框”，复制结果等价于复制输入。
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  )
+                },
+                {
+                  key: "dictionary",
+                  title: "词库",
+                  content: (
+                    <div className="control-group">
+                      <label>自定义词库（影响 Word/Sentence/Title）</label>
+                      <Textarea
+                        value={dictionaryText}
+                        onChange={(e) => applyDictionaryText(e.target.value)}
+                        placeholder={"每行一个词（保持你希望的规范大小写）\n例如：iPhone / OpenAI / API"}
+                        minRows={6}
+                        inputClassName="dictionary-input"
+                      />
+                      <div className="help-hint">已解析 {dictionaryWords.length} 个词条（大小写不敏感匹配）</div>
+                    </div>
+                  )
+                },
+                {
+                  key: "help",
+                  title: "说明",
+                  content: (
+                    <div className="control-group">
+                      <label>使用说明</label>
+                      <Accordion
+                        defaultExpandedKeys={["how-to"]}
+                        items={[
+                          {
+                            key: "how-to",
+                            title: "如何使用",
+                            content: (
+                              <ol className="help-list">
+                                <li>在“输入”里粘贴/键入文本；转换会自动执行。</li>
+                                <li>在“转换操作”选择规则（大小写 / 格式互转 / 清理）。</li>
+                                <li>
+                                  勾选“显示新文本框”时，结果会出现在右侧/下方并且可编辑；不勾选时会直接写回输入框。
+                                </li>
+                                <li>勾选“自动复制结果到剪贴板”后，结果变化会自动复制（带轻量延迟，避免频繁写入）。</li>
+                                <li>
+                                  需要统一专有名词大小写时，在“自定义词库”里每行填一个词（如 iPhone、OpenAI、API）。
+                                </li>
+                                <li>顶部按钮提供“复制/剪切/清空”输入与结果。</li>
+                              </ol>
+                            )
+                          }
+                        ]}
+                      />
+                    </div>
+                  )
+                }
+              ]}
+            />
           </aside>
 
-          <div className="editor-split">
+          <div className="editor-split lettercase-editor">
             <div className="editor-container">
               <div className="editor-header">
                 {showNewTextarea ? "输入 (INPUT)" : "输入/输出 (SAME TEXTAREA)"}
@@ -747,12 +820,12 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
                       start: e.target.selectionStart ?? next.length,
                       end: e.target.selectionEnd ?? next.length
                     };
-                    setInputText(convertText({ text: next, operation, dictionaryMap }));
+                    setInputText(computeConvertedText(next, operation, dictionaryMap));
                     return;
                   }
 
                   setInputText(next);
-                  setOutputText(convertText({ text: next, operation, dictionaryMap }));
+                  setOutputText(computeConvertedText(next, operation, dictionaryMap));
                 }}
               />
             </div>
