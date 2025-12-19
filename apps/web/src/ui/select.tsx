@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { Select as NextUISelect, SelectItem } from "@nextui-org/react";
 
 export type SelectOption = {
@@ -15,9 +16,10 @@ export type SelectProps = {
   label?: string;
   placeholder?: string;
   className?: string;
+  style?: CSSProperties;
 };
 
-export function Select({ value, onChange, options, disabled, label, placeholder, className }: SelectProps) {
+export function Select({ value, onChange, options, disabled, label, placeholder, className, style }: SelectProps) {
   const fallbackAriaLabel = label ?? placeholder ?? "select";
 
   return (
@@ -32,6 +34,7 @@ export function Select({ value, onChange, options, disabled, label, placeholder,
       {...(label === undefined ? {} : { label })}
       {...(placeholder === undefined ? {} : { placeholder })}
       {...(className === undefined ? {} : { className })}
+      {...(style === undefined ? {} : { style })}
       aria-label={fallbackAriaLabel}
       selectionMode="single"
       disallowEmptySelection

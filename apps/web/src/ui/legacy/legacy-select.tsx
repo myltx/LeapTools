@@ -17,6 +17,7 @@ export function LegacySelect({ value, onChange, options, ...props }: LegacySelec
   return (
     <select
       {...props}
+      className={["legacy-field", props.className].filter(Boolean).join(" ")}
       value={value}
       onChange={(e) => {
         onChange(e.target.value);

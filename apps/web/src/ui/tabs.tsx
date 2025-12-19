@@ -13,15 +13,17 @@ export type TabsProps = {
   selectedKey: string;
   onSelectionChange: (key: string) => void;
   items: TabsItem[];
+  className?: string;
 };
 
-export function Tabs({ selectedKey, onSelectionChange, items }: TabsProps) {
+export function Tabs({ selectedKey, onSelectionChange, items, className }: TabsProps) {
   return (
     <NextUITabs
       selectedKey={selectedKey}
       onSelectionChange={(k) => {
         if (typeof k === "string") onSelectionChange(k);
       }}
+      {...(className === undefined ? {} : { className })}
     >
       {items.map((item) => (
         <Tab key={item.key} title={item.title}>

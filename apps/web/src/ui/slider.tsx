@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { Slider as NextUISlider } from "@nextui-org/react";
 
 export type SliderProps = {
@@ -11,9 +12,22 @@ export type SliderProps = {
   disabled?: boolean;
   label?: string;
   formatOptions?: Intl.NumberFormatOptions;
+  className?: string;
+  style?: CSSProperties;
 };
 
-export function Slider({ value, onChange, min, max, step, disabled, label, formatOptions }: SliderProps) {
+export function Slider({
+  value,
+  onChange,
+  min,
+  max,
+  step,
+  disabled,
+  label,
+  formatOptions,
+  className,
+  style
+}: SliderProps) {
   return (
     <NextUISlider
       value={value}
@@ -27,6 +41,8 @@ export function Slider({ value, onChange, min, max, step, disabled, label, forma
       {...(label === undefined ? {} : { label })}
       aria-label={label ?? "slider"}
       {...(formatOptions === undefined ? {} : { formatOptions })}
+      {...(className === undefined ? {} : { className })}
+      {...(style === undefined ? {} : { style })}
     />
   );
 }

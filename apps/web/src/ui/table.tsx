@@ -20,11 +20,12 @@ export type TableProps<T extends object> = {
   columns: TableColumn<T>[];
   rows: T[];
   rowKey: (row: T) => string;
+  className?: string;
 };
 
-export function Table<T extends object>({ columns, rows, rowKey }: TableProps<T>) {
+export function Table<T extends object>({ columns, rows, rowKey, className }: TableProps<T>) {
   return (
-    <NextUITable aria-label="table">
+    <NextUITable aria-label="table" {...(className === undefined ? {} : { className })}>
       <TableHeader columns={columns}>
         {(col) => <TableColumn key={col.key}>{col.title}</TableColumn>}
       </TableHeader>
