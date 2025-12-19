@@ -3,13 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   output: "standalone",
-  transpilePackages: [
-    "@leaptools/ui",
-    "@leaptools/hooks",
-    "@leaptools/utils",
-    "@leaptools/api",
-    "@leaptools/config"
-  ],
+  transpilePackages: ["@leaptools/hooks", "@leaptools/utils", "@leaptools/api", "@leaptools/config"],
   experimental: {
     externalDir: true
   }
