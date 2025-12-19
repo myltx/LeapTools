@@ -1,0 +1,21 @@
+{
+  "name": "@my-app/hooks",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "pnpm exec eslint . --max-warnings=0",
+    "typecheck": "pnpm exec tsc -p tsconfig.json --noEmit",
+    "clean": "pnpm exec rimraf dist"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@my-app/config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.6.0"
+  }
+}

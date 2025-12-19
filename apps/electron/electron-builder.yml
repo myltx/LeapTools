@@ -1,0 +1,21 @@
+appId: com.myapp.desktop
+productName: MyApp
+directories:
+  output: dist-release
+files:
+  - dist/**
+  - node_modules/**
+  - package.json
+asar: true
+extraResources:
+  - from: ../web/.next/standalone
+    to: web
+  - from: ../web/.next/static
+    to: web/.next/static
+  - from: ../web/public
+    to: web/public
+mac:
+  category: public.app-category.productivity
+  target:
+    - dmg
+    - zip

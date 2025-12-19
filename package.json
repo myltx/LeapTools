@@ -1,0 +1,28 @@
+{
+  "name": "my-app",
+  "private": true,
+  "packageManager": "pnpm@10.0.0",
+  "engines": {
+    "node": ">=20.18.0"
+  },
+  "scripts": {
+    "dev": "concurrently -n web,electron -c blue,magenta \"pnpm --filter @my-app/web dev\" \"pnpm --filter @my-app/electron dev\"",
+    "build": "pnpm --filter @my-app/web build && pnpm --filter @my-app/electron build",
+    "lint": "pnpm -r --parallel --if-present lint",
+    "typecheck": "pnpm -r --parallel --if-present typecheck",
+    "format": "prettier -w .",
+    "clean": "pnpm -r --if-present clean"
+  },
+  "devDependencies": {
+    "@my-app/config": "workspace:*",
+    "concurrently": "^9.0.0",
+    "electron-builder": "^25.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "rimraf": "^6.0.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.6.0",
+    "wait-on": "^8.0.0"
+  }
+}

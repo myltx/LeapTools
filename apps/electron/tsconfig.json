@@ -1,0 +1,12 @@
+{
+  "extends": "../../packages/config/tsconfig/electron.json",
+  "compilerOptions": {
+    "types": ["node", "electron"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
