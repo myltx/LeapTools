@@ -6,6 +6,8 @@ import { AppSidebar } from "@/components/NexusToolsSidebar";
 import { CommandPalette } from "@/components/NexusToolsCommandPalette";
 import { HomeView } from "@/components/NexusToolsHomeView";
 import { WorkspaceView } from "@/components/NexusToolsWorkspaceView";
+import type { ToolItem } from "@my-app/config/tools";
+import { tools } from "@my-app/config/tools";
 
 export type NexusView = "home" | "workspace";
 
@@ -20,6 +22,15 @@ export function NexusToolsApp() {
 
   const canRunWorkspaceAction = useMemo(() => view === "workspace", [view]);
   const runWorkspaceRef = useRef<(() => void) | null>(null);
+
+  const activateTool = useCallback(
+    (tool: ToolItem) => {
+      if (tool.route.type === "view") {
+        showView(tool.route.view);
+      }
+    },
+    [showView],
+  );
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -54,7 +65,7 @@ export function NexusToolsApp() {
 
         <main className="app-main">
           <section className={`view-pane ${view === "home" ? "active" : ""}`} aria-hidden={view !== "home"}>
-            <HomeView onOpenWorkspace={() => showView("workspace")} />
+            <HomeView onActivateTool={activateTool} />
           </section>
 
           <section
@@ -74,7 +85,8 @@ export function NexusToolsApp() {
         open={paletteOpen}
         onClose={closePalette}
         onSelect={(id) => {
-          if (id === "workspace.json") showView("workspace");
+          const tool = tools.find((t) => t.id === id);
+          if (tool) activateTool(tool);
           closePalette();
         }}
       />

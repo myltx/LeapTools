@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { ToolItem } from "@my-app/config/tools";
+import { tools } from "@my-app/config/tools";
 
 type CommandItem = {
   id: string;
   label: string;
+  keywords: string[];
 };
 
-const SUGGESTIONS: CommandItem[] = [
-  { id: "workspace.json", label: "💎 JSON 处理器" },
-  { id: "tool.image", label: "🖼️ 无损图片压缩" },
-  { id: "tool.sql", label: "📜 SQL 格式化" }
-];
+function isPaletteTool(tool: ToolItem): tool is ToolItem & { palette: NonNullable<ToolItem["palette"]> } {
+  return Boolean(tool.palette?.enabled);
+}
 
 export function CommandPalette(props: {
   open: boolean;
@@ -27,11 +28,28 @@ export function CommandPalette(props: {
     return () => window.clearTimeout(id);
   }, [props.open]);
 
+  const suggestions = useMemo<CommandItem[]>(() => {
+    return tools
+      .filter(isPaletteTool)
+      .sort((a, b) => (a.palette?.order ?? 0) - (b.palette?.order ?? 0))
+      .map((tool) => ({
+        id: tool.id,
+        label: tool.palette?.label ?? tool.name,
+        keywords: [
+          tool.id,
+          tool.name,
+          tool.description,
+          tool.tag ?? "",
+          ...(tool.palette?.keywords ?? [])
+        ].filter(Boolean)
+      }));
+  }, []);
+
   const items = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return SUGGESTIONS;
-    return SUGGESTIONS.filter((c) => c.label.toLowerCase().includes(q));
-  }, [query]);
+    if (!q) return suggestions;
+    return suggestions.filter((c) => c.keywords.some((k) => k.toLowerCase().includes(q)));
+  }, [query, suggestions]);
 
   return (
     <div

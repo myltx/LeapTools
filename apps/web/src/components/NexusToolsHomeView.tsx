@@ -1,8 +1,11 @@
 "use client";
 
+import type { ToolItem } from "@my-app/config/tools";
+import { tools } from "@my-app/config/tools";
+
 type ToolCardProps = {
   icon: string;
-  tag: string;
+  tag: string | undefined;
   title: string;
   description: string;
   actionHint: string;
@@ -26,7 +29,7 @@ function ToolCard({ icon, tag, title, description, actionHint, onClick }: ToolCa
     >
       <div className="tool-meta">
         <div className="tool-icon">{icon}</div>
-        <span className="tool-tag">{tag}</span>
+        {tag ? <span className="tool-tag">{tag}</span> : null}
       </div>
       <div className="tool-info">
         <h3>{title}</h3>
@@ -37,7 +40,15 @@ function ToolCard({ icon, tag, title, description, actionHint, onClick }: ToolCa
   );
 }
 
-export function HomeView({ onOpenWorkspace }: { onOpenWorkspace: () => void }) {
+function isHomeTool(tool: ToolItem): tool is ToolItem & { home: NonNullable<ToolItem["home"]> } {
+  return Boolean(tool.home?.enabled);
+}
+
+export function HomeView({ onActivateTool }: { onActivateTool: (tool: ToolItem) => void }) {
+  const homeTools = tools
+    .filter(isHomeTool)
+    .sort((a, b) => (a.home?.order ?? 0) - (b.home?.order ?? 0));
+
   return (
     <>
       <div className="grid-title">
@@ -46,30 +57,17 @@ export function HomeView({ onOpenWorkspace }: { onOpenWorkspace: () => void }) {
       </div>
 
       <div className="tool-grid">
-        <ToolCard
-          icon="JSON"
-          tag="核心"
-          title="JSON 工作台"
-          description="支持格式化、语法验证及树状结构预览，适配超大文件处理。"
-          actionHint="进入工作台 →"
-          onClick={onOpenWorkspace}
-        />
-
-        <ToolCard
-          icon="IMG"
-          tag="媒体"
-          title="无损图片压缩"
-          description="基于 browser-side WASM 技术，在本地完成极速高倍压缩。"
-          actionHint="立即运行 →"
-        />
-
-        <ToolCard
-          icon="AI"
-          tag="BETA"
-          title="正则解释器"
-          description="可视化解析复杂正则表达式，并提供 AI 逻辑描述。"
-          actionHint="尝试测试版 →"
-        />
+        {homeTools.map((tool) => (
+          <ToolCard
+            key={tool.id}
+            icon={tool.icon}
+            tag={tool.tag}
+            title={tool.name}
+            description={tool.description}
+            actionHint={tool.home?.actionHint ?? ""}
+            onClick={() => onActivateTool(tool)}
+          />
+        ))}
       </div>
     </>
   );
