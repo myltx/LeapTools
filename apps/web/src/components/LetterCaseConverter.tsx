@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "@my-app/ui";
+import { Button } from "@leaptools/ui";
 
 /**
  * 转换类型（与需求里的 key 保持一致，方便后续接入配置/埋点/快捷键等）。

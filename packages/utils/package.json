@@ -1,5 +1,5 @@
 {
-  "name": "@my-app/utils",
+  "name": "@leaptools/utils",
   "private": true,
   "type": "module",
   "exports": {
@@ -11,7 +11,7 @@
     "clean": "pnpm exec rimraf dist"
   },
   "devDependencies": {
-    "@my-app/config": "workspace:*",
+    "@leaptools/config": "workspace:*",
     "typescript": "^5.6.0"
   }
 }

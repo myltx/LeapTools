@@ -1,4 +1,4 @@
-import { isElectronRenderer } from "@my-app/utils";
+import { isElectronRenderer } from "@leaptools/utils";
 
 export function ServerInfo() {
   return (
@@ -9,4 +9,3 @@ export function ServerInfo() {
     </div>
   );
 }
-

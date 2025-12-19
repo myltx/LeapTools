@@ -23,7 +23,7 @@ const nextFlatConfig = require("eslint-config-next").map((entry) => scopeFiles(e
 module.exports = [
   ...nextFlatConfig,
   {
-    name: "my-app/web-overrides",
+    name: "leaptools/web-overrides",
     files: ["apps/web/**/*.{ts,tsx}"],
     plugins: {
       "@typescript-eslint": tsPlugin,
@@ -55,7 +55,7 @@ module.exports = [
     }
   },
   {
-    name: "my-app/base",
+    name: "leaptools/base",
     files: ["apps/electron/**/*.{js,cjs,mjs,ts,tsx}", "packages/**/*.{js,cjs,mjs,ts,tsx}"],
     ignores: ["**/dist/**", "**/dist-release/**", "**/.next/**", "**/out/**", "**/build/**", "**/node_modules/**"],
     languageOptions: {

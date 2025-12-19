@@ -1,5 +1,5 @@
 {
-  "name": "@my-app/web",
+  "name": "@leaptools/web",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,16 +11,16 @@
     "clean": "pnpm exec rimraf .next"
   },
   "dependencies": {
-    "@my-app/api": "workspace:*",
-    "@my-app/hooks": "workspace:*",
-    "@my-app/ui": "workspace:*",
-    "@my-app/utils": "workspace:*",
+    "@leaptools/api": "workspace:*",
+    "@leaptools/hooks": "workspace:*",
+    "@leaptools/ui": "workspace:*",
+    "@leaptools/utils": "workspace:*",
     "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@my-app/config": "workspace:*",
+    "@leaptools/config": "workspace:*",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

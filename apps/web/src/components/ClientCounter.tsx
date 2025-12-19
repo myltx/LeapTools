@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Button } from "@my-app/ui";
-import { formatNumber } from "@my-app/utils";
+import { Button } from "@leaptools/ui";
+import { formatNumber } from "@leaptools/utils";
 
 export function ClientCounter() {
   const [count, setCount] = useState(0);

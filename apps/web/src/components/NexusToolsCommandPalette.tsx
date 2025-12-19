@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { ToolItem } from "@my-app/config/tools";
-import { tools } from "@my-app/config/tools";
+import type { ToolItem } from "@leaptools/config/tools";
+import { tools } from "@leaptools/config/tools";
 
 type CommandItem = {
   id: string;

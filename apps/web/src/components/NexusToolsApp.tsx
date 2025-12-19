@@ -6,8 +6,8 @@ import { AppSidebar } from "@/components/NexusToolsSidebar";
 import { CommandPalette } from "@/components/NexusToolsCommandPalette";
 import { HomeView } from "@/components/NexusToolsHomeView";
 import { WorkspaceView } from "@/components/NexusToolsWorkspaceView";
-import type { ToolItem } from "@my-app/config/tools";
-import { tools } from "@my-app/config/tools";
+import type { ToolItem } from "@leaptools/config/tools";
+import { tools } from "@leaptools/config/tools";
 
 export type NexusView = "home" | "workspace";
 

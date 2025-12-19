@@ -1,4 +1,4 @@
-import { createApi } from "@my-app/api";
+import { createApi } from "@leaptools/api";
 import { headers } from "next/headers";
 
 export async function HealthCard() {

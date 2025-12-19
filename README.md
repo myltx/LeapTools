@@ -1,4 +1,4 @@
-# my-app
+# LeapTools
 
 ## 环境要求
 
@@ -20,13 +20,13 @@ pnpm dev
 ## 仅启动 Web
 
 ```bash
-pnpm --filter @my-app/web dev
+pnpm --filter @leaptools/web dev
 ```
 
 ## 仅启动 Electron（需要 Web 已在 3000 端口运行）
 
 ```bash
-pnpm --filter @my-app/electron dev
+pnpm --filter @leaptools/electron dev
 ```
 
 ## 构建（Web 产物复用给 Electron）
@@ -53,4 +53,3 @@ pnpm build
 2) 产物目录：
 
 - `apps/electron/dist-release/`
-

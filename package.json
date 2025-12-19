@@ -1,20 +1,20 @@
 {
-  "name": "my-app",
+  "name": "leaptools",
   "private": true,
   "packageManager": "pnpm@10.0.0",
   "engines": {
     "node": ">=20.18.0"
   },
   "scripts": {
-    "dev": "concurrently -n web,electron -c blue,magenta \"pnpm --filter @my-app/web dev\" \"pnpm --filter @my-app/electron dev\"",
-    "build": "pnpm --filter @my-app/web build && pnpm --filter @my-app/electron build",
+    "dev": "concurrently -n web,electron -c blue,magenta \"pnpm --filter @leaptools/web dev\" \"pnpm --filter @leaptools/electron dev\"",
+    "build": "pnpm --filter @leaptools/web build && pnpm --filter @leaptools/electron build",
     "lint": "pnpm -r --parallel --if-present lint",
     "typecheck": "pnpm -r --parallel --if-present typecheck",
     "format": "prettier -w .",
     "clean": "pnpm -r --if-present clean"
   },
   "devDependencies": {
-    "@my-app/config": "workspace:*",
+    "@leaptools/config": "workspace:*",
     "concurrently": "^9.0.0",
     "electron-builder": "^25.0.0",
     "eslint": "^9.0.0",

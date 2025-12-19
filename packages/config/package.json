@@ -1,5 +1,5 @@
 {
-  "name": "@my-app/config",
+  "name": "@leaptools/config",
   "private": true,
   "type": "module",
   "files": ["eslint", "tsconfig", "prettier.cjs", "tools.ts"],

@@ -13,8 +13,8 @@
 
 - 安装依赖：`pnpm install`
 - 同时启动 Web + Electron：`pnpm dev`
-- 仅启动 Web：`pnpm --filter @my-app/web dev`
-- 仅启动 Electron（要求 Web 已运行在 `http://localhost:3000`）：`pnpm --filter @my-app/electron dev`
+- 仅启动 Web：`pnpm --filter @leaptools/web dev`
+- 仅启动 Electron（要求 Web 已运行在 `http://localhost:3000`）：`pnpm --filter @leaptools/electron dev`
 - 构建（Web 产物供 Electron 复用）：`pnpm build`
 - 静态检查：`pnpm lint`、`pnpm typecheck`
 - 格式化：`pnpm format`
@@ -22,9 +22,9 @@
 
 ## 常用工作流（示例）
 
-- 只检查某个包：`pnpm --filter @my-app/web lint`、`pnpm --filter @my-app/electron typecheck`
-- 新增依赖（示例）：`pnpm --filter @my-app/web add zustand`；给共享包加依赖：`pnpm --filter @my-app/utils add zod`
-- 构建/打包 Electron：先 `pnpm --filter @my-app/web build`（或直接 `pnpm build`），再 `pnpm --filter @my-app/electron build`（产物在 `apps/electron/dist-release/`）
+- 只检查某个包：`pnpm --filter @leaptools/web lint`、`pnpm --filter @leaptools/electron typecheck`
+- 新增依赖（示例）：`pnpm --filter @leaptools/web add zustand`；给共享包加依赖：`pnpm --filter @leaptools/utils add zod`
+- 构建/打包 Electron：先 `pnpm --filter @leaptools/web build`（或直接 `pnpm build`），再 `pnpm --filter @leaptools/electron build`（产物在 `apps/electron/dist-release/`）
 - 批量执行（仅存在脚本的包）：`pnpm -r --parallel --if-present lint`、`pnpm -r --parallel --if-present typecheck`
 
 ## 代码风格与命名约定

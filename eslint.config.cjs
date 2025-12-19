@@ -1,2 +1,1 @@
-module.exports = require("@my-app/config/eslint/flat.cjs");
-
+module.exports = require("@leaptools/config/eslint/flat.cjs");

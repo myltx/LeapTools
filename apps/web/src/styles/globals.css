@@ -30,6 +30,28 @@
   --transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
+html.dark {
+  --bg-app: #0b0b0d;
+  --bg-sidebar: #111113;
+  --bg-surface: #141418;
+  --bg-workspace: #0f0f12;
+
+  --text-main: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-tertiary: #71717a;
+
+  --brand-primary: #ffffff;
+  --brand-accent: #338ef7;
+  --brand-success: #17c964;
+  --brand-error: #f31260;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.22);
+
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-float: 0 18px 34px -14px rgba(0, 0, 0, 0.55);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
