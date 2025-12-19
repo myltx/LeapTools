@@ -1,5 +1,7 @@
 "use client";
 
+import { Button, ThemeToggleButton } from "@/ui";
+
 export function AppHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
   return (
     <header className="app-header">
@@ -30,9 +32,10 @@ export function AppHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
       </div>
 
       <div className="header-right">
-        <button className="icon-btn" type="button" aria-label="通知">
+        <Button iconOnly appearance="light" variant="secondary" type="button" aria-label="通知">
           🔔
-        </button>
+        </Button>
+        <ThemeToggleButton />
         <div className="avatar" aria-label="用户头像">
           <div className="avatar-inner">D</div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { analyzeRegexMeta, compileRegex, findRegexMatches } from "@/lib/regexExplorer";
+import { Button, Checkbox, Input, Textarea } from "@/ui";
 
 type OutputState = "idle" | "processing" | "success" | "error";
 
@@ -119,12 +120,12 @@ export function RegexExplorerWorkspaceView({ onRequestRun }: { onRequestRun: (fn
           <p className="workspace-subtitle">编译校验、批量匹配、分组输出</p>
         </div>
         <div className="workspace-actions">
-          <button className="action-btn action-btn-inline" type="button" onClick={() => setText("")}>
+          <Button variant="secondary" type="button" onClick={() => setText("")}>
             清空文本
-          </button>
-          <button className="action-btn-primary action-btn-inline" type="button" onClick={run}>
+          </Button>
+          <Button type="button" onClick={run}>
             立即执行 (⌘↵)
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -139,42 +140,36 @@ export function RegexExplorerWorkspaceView({ onRequestRun }: { onRequestRun: (fn
           <aside className="control-panel">
             <div className="control-group">
               <label>Pattern</label>
-              <input value={pattern} onChange={(e) => setPattern(e.target.value)} placeholder="例如: ^(\\w+)-(\\d+)$" />
+              <Input value={pattern} onChange={(e) => setPattern(e.target.value)} placeholder="例如: ^(\\w+)-(\\d+)$" />
             </div>
 
             <div className="control-group">
               <label>Flags</label>
               <div className="control-options">
-                <label className="control-check">
-                  <input type="checkbox" checked={flagG} onChange={(e) => setFlagG(e.target.checked)} />
+                <Checkbox checked={flagG} onCheckedChange={setFlagG} className="control-check">
                   g 全局
-                </label>
-                <label className="control-check">
-                  <input type="checkbox" checked={flagI} onChange={(e) => setFlagI(e.target.checked)} />
+                </Checkbox>
+                <Checkbox checked={flagI} onCheckedChange={setFlagI} className="control-check">
                   i 忽略大小写
-                </label>
-                <label className="control-check">
-                  <input type="checkbox" checked={flagM} onChange={(e) => setFlagM(e.target.checked)} />
+                </Checkbox>
+                <Checkbox checked={flagM} onCheckedChange={setFlagM} className="control-check">
                   m 多行
-                </label>
-                <label className="control-check">
-                  <input type="checkbox" checked={flagS} onChange={(e) => setFlagS(e.target.checked)} />
+                </Checkbox>
+                <Checkbox checked={flagS} onCheckedChange={setFlagS} className="control-check">
                   s dotAll
-                </label>
-                <label className="control-check">
-                  <input type="checkbox" checked={flagU} onChange={(e) => setFlagU(e.target.checked)} />
+                </Checkbox>
+                <Checkbox checked={flagU} onCheckedChange={setFlagU} className="control-check">
                   u Unicode
-                </label>
-                <label className="control-check">
-                  <input type="checkbox" checked={flagY} onChange={(e) => setFlagY(e.target.checked)} />
+                </Checkbox>
+                <Checkbox checked={flagY} onCheckedChange={setFlagY} className="control-check">
                   y 粘连
-                </label>
+                </Checkbox>
               </div>
             </div>
 
             <div className="control-group">
               <label>最大匹配数</label>
-              <input
+              <Input
                 type="number"
                 min={1}
                 max={5000}
@@ -187,8 +182,10 @@ export function RegexExplorerWorkspaceView({ onRequestRun }: { onRequestRun: (fn
           <div className="editor-split">
             <div className="editor-container">
               <div className="editor-header">输入 (TEST TEXT)</div>
-              <textarea
-                className="editor-input"
+              <Textarea
+                className="editor-textarea"
+                inputClassName="editor-input"
+                inputWrapperClassName="editor-textarea-wrapper"
                 placeholder="粘贴需要匹配的文本..."
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -211,4 +208,3 @@ export function RegexExplorerWorkspaceView({ onRequestRun }: { onRequestRun: (fn
     </>
   );
 }
-

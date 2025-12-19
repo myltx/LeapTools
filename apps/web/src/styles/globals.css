@@ -533,7 +533,19 @@ input,
   color: var(--text-tertiary);
 }
 
-textarea.editor-input {
+.editor-textarea {
+  flex: 1;
+}
+
+.editor-textarea-wrapper {
+  height: 100%;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.editor-input {
   flex: 1;
   border: none;
   padding: 16px;
@@ -545,8 +557,13 @@ textarea.editor-input {
   color: var(--text-main);
 }
 
-textarea.editor-input:focus {
+.editor-input:focus {
   outline: none;
+}
+
+.dictionary-input {
+  font-family: var(--font-mono);
+  font-size: 12px;
 }
 
 .result-view {

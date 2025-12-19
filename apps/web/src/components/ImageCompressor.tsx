@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ImageCompressionOptions, ImageOutputFormat } from "@/lib/imageCompressor";
 import { compressImage, formatBytes } from "@/lib/imageCompressor";
+import { Button, ButtonLink, Input, Select, Slider } from "@/ui";
 
 type OutputState = "idle" | "processing" | "success" | "error";
 
@@ -145,15 +146,15 @@ export function ImageCompressorWorkspaceView({ onRequestRun }: { onRequestRun: (
           <p className="workspace-subtitle">本地批量处理、预览与下载</p>
         </div>
         <div className="workspace-actions">
-          <button className="action-btn action-btn-inline" type="button" onClick={onPickFiles}>
+          <Button variant="secondary" type="button" onClick={onPickFiles}>
             选择图片
-          </button>
-          <button className="action-btn action-btn-inline" type="button" onClick={onClear} disabled={!sources.length}>
+          </Button>
+          <Button variant="secondary" type="button" onClick={onClear} disabled={!sources.length}>
             清空
-          </button>
-          <button className="action-btn-primary action-btn-inline" type="button" onClick={run} disabled={!sources.length}>
+          </Button>
+          <Button type="button" onClick={run} disabled={!sources.length}>
             立即压缩 (⌘↵)
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -178,34 +179,41 @@ export function ImageCompressorWorkspaceView({ onRequestRun }: { onRequestRun: (
                   setFiles(list);
                   e.currentTarget.value = "";
                 }}
+                style={{ display: "none" }}
               />
+              <Button variant="secondary" type="button" onClick={onPickFiles}>
+                选择文件…
+              </Button>
             </div>
 
             <div className="control-group">
               <label>输出格式</label>
-              <select value={format} onChange={(e) => setFormat(e.target.value as ImageOutputFormat)}>
-                <option value="image/webp">WebP</option>
-                <option value="image/jpeg">JPEG</option>
-                <option value="image/png">PNG</option>
-              </select>
+              <Select
+                value={format}
+                onChange={(v) => setFormat(v as ImageOutputFormat)}
+                options={[
+                  { value: "image/webp", label: "WebP" },
+                  { value: "image/jpeg", label: "JPEG" },
+                  { value: "image/png", label: "PNG" }
+                ]}
+              />
             </div>
 
             <div className="control-group">
               <label>质量 (JPEG/WebP)</label>
-              <input
-                type="range"
+              <Slider
+                value={quality}
+                onChange={setQuality}
                 min={0.05}
                 max={1}
                 step={0.01}
-                value={quality}
-                onChange={(e) => setQuality(Number(e.target.value))}
                 disabled={format === "image/png"}
               />
             </div>
 
             <div className="control-group">
               <label>最大宽度 (0=不限制)</label>
-              <input
+              <Input
                 type="number"
                 min={0}
                 value={String(maxWidth)}
@@ -215,7 +223,7 @@ export function ImageCompressorWorkspaceView({ onRequestRun }: { onRequestRun: (
 
             <div className="control-group">
               <label>最大高度 (0=不限制)</label>
-              <input
+              <Input
                 type="number"
                 min={0}
                 value={String(maxHeight)}
@@ -284,13 +292,14 @@ export function ImageCompressorWorkspaceView({ onRequestRun }: { onRequestRun: (
                           </div>
                         </div>
                         <div className="image-actions">
-                          <a
-                            className="action-btn action-btn-inline"
+                          <ButtonLink
+                            variant="secondary"
+                            appearance="bordered"
                             href={r.outputUrl}
                             download={withNewExt(r.file.name, getOutputExt(r.format))}
                           >
                             下载
-                          </a>
+                          </ButtonLink>
                         </div>
                       </div>
                     );

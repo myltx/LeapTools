@@ -7,6 +7,7 @@ import { RegexExplorerWorkspaceView } from "@/components/RegexExplorer";
 import { SqlFormatterWorkspaceView } from "@/components/SqlFormatter";
 import type { JsonProcessorOptions } from "@/lib/jsonProcessor";
 import { runJsonProcessor } from "@/lib/jsonProcessor";
+import { Button, Checkbox, Select, Textarea } from "@/ui";
 
 type OutputState = "idle" | "processing" | "success" | "error";
 
@@ -84,12 +85,12 @@ function JsonProcessorWorkspaceView({ onRequestRun }: { onRequestRun: (fn: () =>
           <p className="workspace-subtitle">结构化数据处理空间</p>
         </div>
         <div className="workspace-actions">
-          <button className="action-btn action-btn-inline" type="button">
+          <Button variant="secondary" type="button">
             分享工作台
-          </button>
-          <button className="action-btn-primary action-btn-inline" type="button" onClick={run}>
+          </Button>
+          <Button type="button" onClick={run}>
             立即执行 (⌘↵)
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -133,38 +134,37 @@ function JsonWorkspace(props: {
         <aside className="control-panel">
           <div className="control-group">
             <label>缩进宽度</label>
-            <select
+            <Select
               value={String(props.indent)}
-              onChange={(e) => {
-                const v = Number(e.target.value);
-                props.onIndentChange(v === 0 ? 0 : v === 2 ? 2 : 4);
+              onChange={(v) => {
+                const n = Number(v);
+                props.onIndentChange(n === 0 ? 0 : n === 2 ? 2 : 4);
               }}
-            >
-              <option value="2">2 个空格</option>
-              <option value="4">4 个空格</option>
-              <option value="0">压缩 (Minify)</option>
-            </select>
+              options={[
+                { value: "2", label: "2 个空格" },
+                { value: "4", label: "4 个空格" },
+                { value: "0", label: "压缩 (Minify)" }
+              ]}
+            />
           </div>
 
           <div className="control-group">
             <label>转换选项</label>
             <div className="control-options">
-              <label className="control-check">
-                <input
-                  type="checkbox"
-                  checked={props.sortKeys}
-                  onChange={(e) => props.onSortKeysChange(e.target.checked)}
-                />
+              <Checkbox
+                className="control-check"
+                checked={props.sortKeys}
+                onCheckedChange={props.onSortKeysChange}
+              >
                 键名按字母排序
-              </label>
-              <label className="control-check">
-                <input
-                  type="checkbox"
-                  checked={props.escapeUnicode}
-                  onChange={(e) => props.onEscapeUnicodeChange(e.target.checked)}
-                />
+              </Checkbox>
+              <Checkbox
+                className="control-check"
+                checked={props.escapeUnicode}
+                onCheckedChange={props.onEscapeUnicodeChange}
+              >
                 转义 Unicode
-              </label>
+              </Checkbox>
             </div>
           </div>
         </aside>
@@ -172,8 +172,10 @@ function JsonWorkspace(props: {
         <div className="editor-split">
           <div className="editor-container">
             <div className="editor-header">输入 (RAW INPUT)</div>
-            <textarea
-              className="editor-input"
+            <Textarea
+              className="editor-textarea"
+              inputClassName="editor-input"
+              inputWrapperClassName="editor-textarea-wrapper"
               placeholder="粘贴 JSON 原始数据..."
               value={props.input}
               onChange={(e) => props.onInputChange(e.target.value)}

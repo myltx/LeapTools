@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ToolItem } from "@leaptools/config/tools";
 import { tools } from "@leaptools/config/tools";
+import { Button, Dialog, Input } from "@/ui";
 
 type CommandItem = {
   id: string;
@@ -52,20 +53,18 @@ export function CommandPalette(props: {
   }, [query, suggestions]);
 
   return (
-    <div
-      className={`modal-overlay ${props.open ? "open" : ""}`}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) props.onClose();
+    <Dialog
+      isOpen={props.open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) props.onClose();
       }}
-      role="dialog"
-      aria-modal="true"
-      aria-hidden={!props.open}
+      dismissable
+      size="lg"
     >
       <div className="command-palette">
-        <input
+        <Input
           ref={inputRef}
           type="text"
-          className="palette-input"
           placeholder="键入工具名称或命令..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -73,17 +72,20 @@ export function CommandPalette(props: {
         <div className="palette-body">
           <div className="nav-heading">建议工具</div>
           {items.map((item, idx) => (
-            <button
+            <Button
               key={item.id}
               type="button"
-              className={`nav-item palette-item ${idx === 0 ? "palette-item-primary" : ""}`}
+              variant={idx === 0 ? "primary" : "secondary"}
+              appearance={idx === 0 ? "flat" : "light"}
+              fullWidth
+              style={{ justifyContent: "flex-start" }}
               onClick={() => props.onSelect(item.id)}
             >
               {item.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 }

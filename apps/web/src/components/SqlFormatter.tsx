@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { SqlFormatMode, SqlFormatOptions } from "@/lib/sqlFormatter";
 import { runSqlFormatter } from "@/lib/sqlFormatter";
+import { Button, Checkbox, Select, Textarea } from "@/ui";
 
 type OutputState = "idle" | "processing" | "success" | "error";
 
@@ -97,15 +98,15 @@ export function SqlFormatterWorkspaceView({ onRequestRun }: { onRequestRun: (fn:
           <p className="workspace-subtitle">美化与规范化输出（本地处理）</p>
         </div>
         <div className="workspace-actions">
-          <button className="action-btn action-btn-inline" type="button" onClick={() => setInput("")}>
+          <Button variant="secondary" type="button" onClick={() => setInput("")}>
             清空输入
-          </button>
-          <button className="action-btn action-btn-inline" type="button" onClick={() => void onCopyOutput()}>
+          </Button>
+          <Button variant="secondary" type="button" onClick={() => void onCopyOutput()}>
             复制输出
-          </button>
-          <button className="action-btn-primary action-btn-inline" type="button" onClick={run}>
+          </Button>
+          <Button type="button" onClick={run}>
             立即执行 (⌘↵)
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -120,58 +121,63 @@ export function SqlFormatterWorkspaceView({ onRequestRun }: { onRequestRun: (fn:
           <aside className="control-panel">
             <div className="control-group">
               <label>处理模式</label>
-              <select value={mode} onChange={(e) => setMode(e.target.value as SqlFormatMode)}>
-                <option value="format">格式化</option>
-                <option value="minify">压缩 (Minify)</option>
-              </select>
+              <Select
+                value={mode}
+                onChange={(v) => setMode(v as SqlFormatMode)}
+                options={[
+                  { value: "format", label: "格式化" },
+                  { value: "minify", label: "压缩 (Minify)" }
+                ]}
+              />
             </div>
 
             <div className="control-group">
               <label>缩进宽度</label>
-              <select
+              <Select
                 value={String(indentSize)}
-                onChange={(e) => setIndentSize(Number(e.target.value) === 4 ? 4 : 2)}
+                onChange={(v) => setIndentSize(Number(v) === 4 ? 4 : 2)}
                 disabled={mode !== "format"}
-              >
-                <option value="2">2 个空格</option>
-                <option value="4">4 个空格</option>
-              </select>
+                options={[
+                  { value: "2", label: "2 个空格" },
+                  { value: "4", label: "4 个空格" }
+                ]}
+              />
             </div>
 
             <div className="control-group">
               <label>转换选项</label>
               <div className="control-options">
-                <label className="control-check">
-                  <input
-                    type="checkbox"
-                    checked={uppercaseKeywords}
-                    onChange={(e) => setUppercaseKeywords(e.target.checked)}
-                    disabled={mode !== "format"}
-                  />
+                <Checkbox
+                  className="control-check"
+                  checked={uppercaseKeywords}
+                  onCheckedChange={setUppercaseKeywords}
+                  disabled={mode !== "format"}
+                >
                   关键字大写
-                </label>
-                <label className="control-check">
-                  <input
-                    type="checkbox"
-                    checked={breakAfterComma}
-                    onChange={(e) => setBreakAfterComma(e.target.checked)}
-                    disabled={mode !== "format"}
-                  />
+                </Checkbox>
+                <Checkbox
+                  className="control-check"
+                  checked={breakAfterComma}
+                  onCheckedChange={setBreakAfterComma}
+                  disabled={mode !== "format"}
+                >
                   逗号后换行
-                </label>
-                <label className="control-check">
-                  <input
-                    type="checkbox"
-                    checked={newlineBeforeAndOr}
-                    onChange={(e) => setNewlineBeforeAndOr(e.target.checked)}
-                    disabled={mode !== "format"}
-                  />
+                </Checkbox>
+                <Checkbox
+                  className="control-check"
+                  checked={newlineBeforeAndOr}
+                  onCheckedChange={setNewlineBeforeAndOr}
+                  disabled={mode !== "format"}
+                >
                   AND/OR 另起一行
-                </label>
-                <label className="control-check">
-                  <input type="checkbox" checked={stripComments} onChange={(e) => setStripComments(e.target.checked)} />
+                </Checkbox>
+                <Checkbox
+                  className="control-check"
+                  checked={stripComments}
+                  onCheckedChange={setStripComments}
+                >
                   去除注释
-                </label>
+                </Checkbox>
               </div>
             </div>
           </aside>
@@ -179,8 +185,10 @@ export function SqlFormatterWorkspaceView({ onRequestRun }: { onRequestRun: (fn:
           <div className="editor-split">
             <div className="editor-container">
               <div className="editor-header">输入 (RAW INPUT)</div>
-              <textarea
-                className="editor-input"
+              <Textarea
+                className="editor-textarea"
+                inputClassName="editor-input"
+                inputWrapperClassName="editor-textarea-wrapper"
                 placeholder="粘贴 SQL..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -203,4 +211,3 @@ export function SqlFormatterWorkspaceView({ onRequestRun }: { onRequestRun: (fn:
     </>
   );
 }
-

@@ -1,6 +1,7 @@
 "use client";
 
 import type { NexusView } from "@/components/NexusToolsApp";
+import { Link } from "@/ui";
 import type { ReactNode } from "react";
 
 type NavItemProps = {
@@ -11,7 +12,7 @@ type NavItemProps = {
 
 function NavItem({ active, children, onClick }: NavItemProps) {
   return (
-    <a
+    <Link
       href="#"
       className={`nav-item ${active ? "active" : ""}`}
       onClick={(e) => {
@@ -20,7 +21,7 @@ function NavItem({ active, children, onClick }: NavItemProps) {
       }}
     >
       {children}
-    </a>
+    </Link>
   );
 }
 

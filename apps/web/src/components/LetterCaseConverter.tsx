@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "@/ui";
+import { Button, Checkbox, Select, Textarea } from "@/ui";
 
 /**
  * 转换类型（与需求里的 key 保持一致，方便后续接入配置/埋点/快捷键等）。
@@ -595,10 +595,10 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
             <div className="control-group">
               <label>转换操作</label>
               {/* 核心交互：选择操作后，自动对输入进行转换 */}
-              <select
+              <Select
                 value={operation}
-                onChange={(e) => {
-                  const nextOperation = e.target.value as LetterCaseOperation;
+                onChange={(value) => {
+                  const nextOperation = value as LetterCaseOperation;
                   setOperation(nextOperation);
 
                   if (showNewTextarea) {
@@ -609,33 +609,28 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
                   const next = convertText({ text: inputText, operation: nextOperation, dictionaryMap });
                   if (next !== inputText) setInputText(next);
                 }}
-              >
-                <optgroup label="大小写转换">
-                  <option value="upper_case">upper_case：全部大写</option>
-                  <option value="lower_case">lower_case：全部小写</option>
-                  <option value="word_case">word_case：每个单词首字母大写</option>
-                  <option value="word_lower_case">word_lower_case：每个单词首字母小写</option>
-                  <option value="sentence_case">sentence_case：句子首字母大写</option>
-                  <option value="title_case">title_case：标题大小写</option>
-                </optgroup>
-                <optgroup label="格式转换（空格 ↔ ...）">
-                  <option value="space_to_underscore">空格 → 下划线</option>
-                  <option value="underscore_to_space">下划线 → 空格</option>
-                  <option value="space_to_camel">空格 → 驼峰 (camelCase)</option>
-                  <option value="camel_to_space">驼峰 → 空格</option>
-                  <option value="space_to_kebab">空格 → 中横线 (kebab-case)</option>
-                  <option value="kebab_to_space">中横线 → 空格</option>
-                  <option value="space_to_newline">空格 → 换行</option>
-                  <option value="newline_to_space">换行 → 空格</option>
-                  <option value="space_to_dot">空格 → 小数点 (.)</option>
-                  <option value="dot_to_space">小数点 → 空格</option>
-                </optgroup>
-                <optgroup label="清理操作">
-                  <option value="del_punctuation">del_punctuation：删除标点/符号</option>
-                  <option value="del_blank">del_blank：删除所有空白</option>
-                  <option value="del_linebreak">del_linebreak：删除换行</option>
-                </optgroup>
-              </select>
+                options={[
+                  { value: "upper_case", label: "大小写转换 · upper_case：全部大写" },
+                  { value: "lower_case", label: "大小写转换 · lower_case：全部小写" },
+                  { value: "word_case", label: "大小写转换 · word_case：每个单词首字母大写" },
+                  { value: "word_lower_case", label: "大小写转换 · word_lower_case：每个单词首字母小写" },
+                  { value: "sentence_case", label: "大小写转换 · sentence_case：句子首字母大写" },
+                  { value: "title_case", label: "大小写转换 · title_case：标题大小写" },
+                  { value: "space_to_underscore", label: "格式转换 · 空格 → 下划线" },
+                  { value: "underscore_to_space", label: "格式转换 · 下划线 → 空格" },
+                  { value: "space_to_camel", label: "格式转换 · 空格 → 驼峰 (camelCase)" },
+                  { value: "camel_to_space", label: "格式转换 · 驼峰 → 空格" },
+                  { value: "space_to_kebab", label: "格式转换 · 空格 → 中横线 (kebab-case)" },
+                  { value: "kebab_to_space", label: "格式转换 · 中横线 → 空格" },
+                  { value: "space_to_newline", label: "格式转换 · 空格 → 换行" },
+                  { value: "newline_to_space", label: "格式转换 · 换行 → 空格" },
+                  { value: "space_to_dot", label: "格式转换 · 空格 → 小数点 (.)" },
+                  { value: "dot_to_space", label: "格式转换 · 小数点 → 空格" },
+                  { value: "del_punctuation", label: "清理操作 · del_punctuation：删除标点/符号" },
+                  { value: "del_blank", label: "清理操作 · del_blank：删除所有空白" },
+                  { value: "del_linebreak", label: "清理操作 · del_linebreak：删除换行" }
+                ]}
+              />
 
               {/* 使用说明：针对当前操作的简要解释与示例 */}
               <div
@@ -678,32 +673,29 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
               <label>输出与复制</label>
               <div className="control-options">
                 {/* 交互：结果输出到原文本框 / 新文本框 */}
-                <label className="control-check">
-                  <input
-                    type="checkbox"
-                    checked={showNewTextarea}
-                    onChange={(e) => {
-                      const checked = e.target.checked;
-                      setShowNewTextarea(checked);
+                <Checkbox
+                  className="control-check"
+                  checked={showNewTextarea}
+                  onCheckedChange={(checked) => {
+                    setShowNewTextarea(checked);
 
-                      if (checked) {
-                        setOutputText(convertText({ text: inputText, operation, dictionaryMap }));
-                        return;
-                      }
+                    if (checked) {
+                      setOutputText(convertText({ text: inputText, operation, dictionaryMap }));
+                      return;
+                    }
 
-                      const next = convertText({ text: inputText, operation, dictionaryMap });
-                      if (next !== inputText) setInputText(next);
-                      setOutputText("");
-                    }}
-                  />
+                    const next = convertText({ text: inputText, operation, dictionaryMap });
+                    if (next !== inputText) setInputText(next);
+                    setOutputText("");
+                  }}
+                >
                   显示新文本框（结果可编辑）
-                </label>
+                </Checkbox>
 
                 {/* 交互：自动复制结果到剪贴板 */}
-                <label className="control-check">
-                  <input type="checkbox" checked={autoCopy} onChange={(e) => setAutoCopy(e.target.checked)} />
+                <Checkbox className="control-check" checked={autoCopy} onCheckedChange={setAutoCopy}>
                   自动复制结果到剪贴板
-                </label>
+                </Checkbox>
               </div>
             </div>
 
@@ -734,7 +726,7 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
 
             <div className="control-group">
               <label>自定义词库（影响 Word/Sentence/Title）</label>
-              <textarea
+              <Textarea
                 value={dictionaryText}
                 onChange={(e) => {
                   const nextDictionaryText = e.target.value;
@@ -752,16 +744,8 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
                   if (next !== inputText) setInputText(next);
                 }}
                 placeholder={"每行一个词（保持你希望的规范大小写）\n例如：iPhone / OpenAI / API"}
-                style={{
-                  width: "100%",
-                  minHeight: 120,
-                  padding: "10px 12px",
-                  borderRadius: 10,
-                  border: "1px solid var(--border-subtle)",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 12,
-                  resize: "vertical"
-                }}
+                minRows={6}
+                inputClassName="dictionary-input"
               />
               <div style={{ marginTop: 8, fontSize: 12, color: "var(--text-secondary)" }}>
                 已解析 {dictionaryWords.length} 个词条（大小写不敏感匹配）
@@ -774,33 +758,38 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
               <div className="editor-header">
                 {showNewTextarea ? "输入 (INPUT)" : "输入/输出 (SAME TEXTAREA)"}
               </div>
-              <textarea
+              <Textarea
                 ref={inputRef}
-                className="editor-input"
+                className="editor-textarea"
+                inputClassName="editor-input"
+                inputWrapperClassName="editor-textarea-wrapper"
                 placeholder="输入英文文本，转换将自动执行..."
                 value={inputText}
-                  onChange={(e) => {
-                    const next = e.target.value;
-                    if (!showNewTextarea) {
-                      // 输出到原文本框：直接将用户输入的内容转换后写回输入框
+                onChange={(e) => {
+                  const next = e.target.value;
+
+                  if (!showNewTextarea) {
                     pendingSelectionRef.current = {
                       start: e.target.selectionStart ?? next.length,
                       end: e.target.selectionEnd ?? next.length
                     };
-                      setInputText(convertText({ text: next, operation, dictionaryMap }));
-                      return;
-                    }
-                    setInputText(next);
-                    setOutputText(convertText({ text: next, operation, dictionaryMap }));
-                  }}
-                />
+                    setInputText(convertText({ text: next, operation, dictionaryMap }));
+                    return;
+                  }
+
+                  setInputText(next);
+                  setOutputText(convertText({ text: next, operation, dictionaryMap }));
+                }}
+              />
             </div>
 
             {showNewTextarea ? (
               <div className="editor-container editor-container-last">
                 <div className="editor-header">结果 (OUTPUT)</div>
-                <textarea
-                  className="editor-input"
+                <Textarea
+                  className="editor-textarea"
+                  inputClassName="editor-input"
+                  inputWrapperClassName="editor-textarea-wrapper"
                   placeholder="转换结果会显示在这里（可手动微调；输入变化会重新生成结果）"
                   value={outputText}
                   onChange={(e) => setOutputText(e.target.value)}

@@ -2,6 +2,7 @@
 
 import type { ToolItem } from "@leaptools/config/tools";
 import { tools } from "@leaptools/config/tools";
+import { Card } from "@/ui";
 
 type ToolCardProps = {
   icon: string;
@@ -14,18 +15,10 @@ type ToolCardProps = {
 
 function ToolCard({ icon, tag, title, description, actionHint, onClick }: ToolCardProps) {
   return (
-    <article
+    <Card
       className="tool-card"
-      onClick={onClick}
-      onKeyDown={(e) => {
-        if (!onClick) return;
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onClick();
-        }
-      }}
-      role={onClick ? "button" : undefined}
-      tabIndex={0}
+      isPressable={Boolean(onClick)}
+      {...(onClick ? { onPress: () => onClick() } : {})}
     >
       <div className="tool-meta">
         <div className="tool-icon">{icon}</div>
@@ -36,7 +29,7 @@ function ToolCard({ icon, tag, title, description, actionHint, onClick }: ToolCa
         <p>{description}</p>
       </div>
       <div className="tool-action-hint">{actionHint}</div>
-    </article>
+    </Card>
   );
 }
 
