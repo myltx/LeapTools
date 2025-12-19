@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Accordion, Button, Checkbox, Tabs, Textarea } from "@/ui";
+import { Accordion, Button, ButtonGroup, Checkbox, Tabs, Textarea } from "@/ui";
 
 /**
  * 转换类型（与需求里的 key 保持一致，方便后续接入配置/埋点/快捷键等）。
@@ -213,6 +213,47 @@ const OPERATION_GROUPS: Array<{
     operations: ["del_punctuation", "del_blank", "del_linebreak"]
   }
 ];
+
+const OPERATION_SHORT_LABEL: Record<LetterCaseOperation, string> = {
+  upper_case: "全大写",
+  lower_case: "全小写",
+  word_case: "词首大写",
+  word_lower_case: "词首小写",
+  sentence_case: "句首大写",
+  title_case: "标题",
+  space_to_underscore: "空格→_",
+  underscore_to_space: "_→空格",
+  space_to_camel: "空格→驼峰",
+  camel_to_space: "驼峰→空格",
+  space_to_kebab: "空格→-",
+  kebab_to_space: "-→空格",
+  space_to_newline: "空格→换行",
+  newline_to_space: "换行→空格",
+  space_to_dot: "空格→.",
+  dot_to_space: ".→空格",
+  del_punctuation: "删标点",
+  del_blank: "删空白",
+  del_linebreak: "删换行"
+};
+
+const GROUP_SELECTOR: Array<{ key: OperationGroupKey; label: string }> = [
+  { key: "case", label: "大小写" },
+  { key: "format", label: "格式" },
+  { key: "cleanup", label: "清理" }
+];
+
+function getGroupForOperation(operation: LetterCaseOperation): OperationGroupKey {
+  for (const group of OPERATION_GROUPS) {
+    if (group.operations.includes(operation)) return group.key;
+  }
+  return "case";
+}
+
+function chunk<T>(items: T[], size: number) {
+  const out: T[][] = [];
+  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  return out;
+}
 
 /**
  * 将自定义词库解析为「规范写法」数组：
@@ -500,6 +541,11 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
   const [panelTab, setPanelTab] = useState<"operation" | "output" | "dictionary" | "help">("operation");
+  const [operationGroup, setOperationGroup] = useState<OperationGroupKey>(() => getGroupForOperation(operation));
+
+  useEffect(() => {
+    setOperationGroup(getGroupForOperation(operation));
+  }, [operation]);
 
   // 尝试在“输出到原文本框”模式下保留光标位置（长度变化时做 clamp）
   useEffect(() => {
@@ -679,36 +725,57 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
                   content: (
                     <div className="control-group">
                       <label>转换操作</label>
-                      <div className="usecase-groups">
-                        {OPERATION_GROUPS.map((group) => (
-                          <div key={group.key} className="usecase-group">
-                            <div className="usecase-group-title">{group.title}</div>
-                            <div className="usecase-group-list">
-                              {group.operations.map((op) => {
-                                const help = OPERATION_HELP[op];
+                      <div className="operation-controls">
+                        <ButtonGroup className="operation-button-group" size="sm" radius="sm" variant="bordered">
+                          {GROUP_SELECTOR.map((group) => {
+                            const selected = group.key === operationGroup;
+                            return (
+                              <Button
+                                key={group.key}
+                                type="button"
+                                variant={selected ? "primary" : "secondary"}
+                                appearance={selected ? "solid" : "bordered"}
+                                size="sm"
+                                onClick={() => setOperationGroup(group.key)}
+                                style={{ flex: 1, minWidth: 0 }}
+                              >
+                                {group.label}
+                              </Button>
+                            );
+                          })}
+                        </ButtonGroup>
+
+                        <div className="operation-button-rows">
+                          {chunk(
+                            OPERATION_GROUPS.find((g) => g.key === operationGroup)?.operations ?? [],
+                            3,
+                          ).map((row) => (
+                            <ButtonGroup
+                              key={row.join("|")}
+                              className="operation-button-group"
+                              size="sm"
+                              radius="sm"
+                              variant="bordered"
+                            >
+                              {row.map((op) => {
                                 const selected = op === operation;
                                 return (
                                   <Button
                                     key={op}
                                     type="button"
-                                    fullWidth
-                                    size="sm"
                                     variant={selected ? "primary" : "secondary"}
-                                    appearance={selected ? "flat" : "light"}
+                                    appearance={selected ? "solid" : "bordered"}
+                                    size="sm"
                                     onClick={() => applyOperation(op)}
-                                    style={{ justifyContent: "flex-start" }}
+                                    style={{ flex: 1, minWidth: 0 }}
                                   >
-                                    <div className="usecase-item" aria-current={selected ? "true" : undefined}>
-                                      <div className="usecase-item-title">{help.title}</div>
-                                      <div className="usecase-item-desc">{help.description}</div>
-                                      <div className="usecase-item-meta">{op}</div>
-                                    </div>
+                                    {OPERATION_SHORT_LABEL[op]}
                                   </Button>
                                 );
                               })}
-                            </div>
-                          </div>
-                        ))}
+                            </ButtonGroup>
+                          ))}
+                        </div>
                       </div>
 
                       <div className="help-card">

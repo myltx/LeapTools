@@ -697,54 +697,21 @@ a:not([class]) {
   color: var(--text-secondary);
 }
 
-.usecase-groups {
+.operation-controls {
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  margin-top: 10px;
+  gap: 10px;
 }
 
-.usecase-group-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-tertiary);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.usecase-group-list {
+.operation-button-rows {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.usecase-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  text-align: left;
-}
-
-.usecase-item-title {
-  font-size: 13px;
-  font-weight: 650;
-  color: var(--text-main);
-  line-height: 1.25;
-}
-
-.usecase-item-desc {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.4;
-}
-
-.usecase-item-meta {
-  margin-top: 4px;
-  font-size: 11px;
-  color: var(--text-tertiary);
-  font-family: var(--font-mono);
+.operation-button-group {
+  width: 100%;
 }
 
 .result-view {

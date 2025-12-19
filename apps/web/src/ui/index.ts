@@ -1,6 +1,9 @@
 export { Button } from "./button";
 export type { ButtonProps, ButtonVariant } from "./button";
 
+export { ButtonGroup } from "./button-group";
+export type { ButtonGroupProps } from "./button-group";
+
 export { ButtonLink } from "./button-link";
 export type { ButtonLinkProps } from "./button-link";
 
