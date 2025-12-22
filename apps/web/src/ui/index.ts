@@ -16,6 +16,9 @@ export type {
 export { Tooltip } from "./tooltip";
 export type { TooltipProps } from "./tooltip";
 
+export { Divider } from "./divider";
+export type { DividerProps } from "./divider";
+
 export { ButtonLink } from "./button-link";
 export type { ButtonLinkProps } from "./button-link";
 

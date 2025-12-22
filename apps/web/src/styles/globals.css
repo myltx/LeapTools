@@ -506,10 +506,173 @@ a:not([class]) {
 
 .lettercase-content .control-panel {
   height: 100%;
+  overflow: hidden;
 }
 
-.lettercase-content .lettercase-editor {
+.lettercase-panel-card {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.lettercase-panel-header {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lettercase-panel-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.lettercase-panel-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.lettercase-panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lettercase-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 2px 0;
+}
+
+.lettercase-current {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--bg-surface-muted);
+}
+
+.lettercase-current-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lettercase-current-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.lettercase-op-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.lettercase-op-btn {
+  justify-content: center;
+  padding-left: 8px;
+  padding-right: 8px;
+  white-space: nowrap;
+}
+
+.lettercase-workspace {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+  padding: 16px;
+  background: var(--bg-workspace);
+}
+
+.lettercase-io-card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+}
+
+.lettercase-io-header {
+  padding: 12px 14px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lettercase-io-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.lettercase-io-meta {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.lettercase-io-body {
+  flex: 1;
+  min-height: 0;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.lettercase-textarea-wrapper {
+  height: 100%;
+  min-height: 0;
+}
+
+.lettercase-textarea {
+  height: 100%;
+  min-height: 0;
+}
+
+.lettercase-textarea-input-wrapper {
+  height: 100%;
+}
+
+.lettercase-textarea-output-wrapper {
+  height: 100%;
+}
+
+.lettercase-textarea-input {
+  height: 100%;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.lettercase-io-footer {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-sidebar);
+}
+
+.lettercase-footer-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }
 
 /* 参数控制面板 */
@@ -720,34 +883,6 @@ a:not([class]) {
   color: var(--text-secondary);
 }
 
-.operation-sections {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.operation-section-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-tertiary);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.operation-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
-  gap: 8px;
-}
-
-.operation-button {
-  justify-content: center;
-  padding-left: 8px;
-  padding-right: 8px;
-  white-space: nowrap;
-}
 
 .result-view {
   flex: 1;
