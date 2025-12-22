@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Accordion, Button, ButtonGroup, Checkbox, Tabs, Textarea } from "@/ui";
+import { Accordion, Button, ButtonGroup, Checkbox, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, Tabs, Textarea } from "@/ui";
 
 /**
  * 转换类型（与需求里的 key 保持一致，方便后续接入配置/埋点/快捷键等）。
@@ -179,20 +179,15 @@ const TITLE_CASE_MINOR_WORDS = new Set(
   ].map((w) => w.toLowerCase()),
 );
 
-type OperationGroupKey = "case" | "format" | "cleanup";
-
 const OPERATION_GROUPS: Array<{
-  key: OperationGroupKey;
   title: string;
   operations: LetterCaseOperation[];
 }> = [
   {
-    key: "case",
     title: "大小写转换",
     operations: ["upper_case", "lower_case", "word_case", "word_lower_case", "sentence_case", "title_case"]
   },
   {
-    key: "format",
     title: "格式转换",
     operations: [
       "space_to_underscore",
@@ -208,7 +203,6 @@ const OPERATION_GROUPS: Array<{
     ]
   },
   {
-    key: "cleanup",
     title: "清理操作",
     operations: ["del_punctuation", "del_blank", "del_linebreak"]
   }
@@ -236,23 +230,15 @@ const OPERATION_SHORT_LABEL: Record<LetterCaseOperation, string> = {
   del_linebreak: "删换行"
 };
 
-const GROUP_SELECTOR: Array<{ key: OperationGroupKey; label: string }> = [
-  { key: "case", label: "大小写" },
-  { key: "format", label: "格式" },
-  { key: "cleanup", label: "清理" }
-];
-
-function getGroupForOperation(operation: LetterCaseOperation): OperationGroupKey {
-  for (const group of OPERATION_GROUPS) {
-    if (group.operations.includes(operation)) return group.key;
-  }
-  return "case";
-}
-
-function chunk<T>(items: T[], size: number) {
-  const out: T[][] = [];
-  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
-  return out;
+function ChevronDownIcon() {
+  return (
+    <svg fill="none" height="14" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M17.9188 8.17969H11.6888H6.07877C5.11877 8.17969 4.63877 9.33969 5.31877 10.0197L10.4988 15.1997C11.3288 16.0297 12.6788 16.0297 13.5088 15.1997L15.4788 13.2297L18.6888 10.0197C19.3588 9.33969 18.8788 8.17969 17.9188 8.17969Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
 }
 
 /**
@@ -541,11 +527,6 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
   const [panelTab, setPanelTab] = useState<"operation" | "output" | "dictionary" | "help">("operation");
-  const [operationGroup, setOperationGroup] = useState<OperationGroupKey>(() => getGroupForOperation(operation));
-
-  useEffect(() => {
-    setOperationGroup(getGroupForOperation(operation));
-  }, [operation]);
 
   // 尝试在“输出到原文本框”模式下保留光标位置（长度变化时做 clamp）
   useEffect(() => {
@@ -725,58 +706,39 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
                   content: (
                     <div className="control-group">
                       <label>转换操作</label>
-                      <div className="operation-controls">
-                        <ButtonGroup className="operation-button-group" size="sm" radius="sm" variant="bordered">
-                          {GROUP_SELECTOR.map((group) => {
-                            const selected = group.key === operationGroup;
-                            return (
-                              <Button
-                                key={group.key}
-                                type="button"
-                                variant={selected ? "primary" : "secondary"}
-                                appearance={selected ? "solid" : "bordered"}
-                                size="sm"
-                                onClick={() => setOperationGroup(group.key)}
-                                style={{ flex: 1, minWidth: 0 }}
-                              >
-                                {group.label}
-                              </Button>
-                            );
-                          })}
-                        </ButtonGroup>
-
-                        <div className="operation-button-rows">
-                          {chunk(
-                            OPERATION_GROUPS.find((g) => g.key === operationGroup)?.operations ?? [],
-                            3,
-                          ).map((row) => (
-                            <ButtonGroup
-                              key={row.join("|")}
-                              className="operation-button-group"
-                              size="sm"
-                              radius="sm"
-                              variant="bordered"
-                            >
-                              {row.map((op) => {
-                                const selected = op === operation;
-                                return (
-                                  <Button
-                                    key={op}
-                                    type="button"
-                                    variant={selected ? "primary" : "secondary"}
-                                    appearance={selected ? "solid" : "bordered"}
-                                    size="sm"
-                                    onClick={() => applyOperation(op)}
-                                    style={{ flex: 1, minWidth: 0 }}
-                                  >
+                      <ButtonGroup className="operation-split" size="sm" radius="sm" variant="flat">
+                        <Button type="button" variant="secondary" appearance="flat" size="sm">
+                          {OPERATION_SHORT_LABEL[operation]}
+                        </Button>
+                        <Dropdown placement="bottom-end">
+                          <DropdownTrigger>
+                            <Button type="button" variant="secondary" appearance="flat" size="sm" iconOnly aria-label="选择转换操作">
+                              <ChevronDownIcon />
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu
+                            disallowEmptySelection
+                            aria-label="转换操作"
+                            selectionMode="single"
+                            selectedKeys={new Set([operation])}
+                            onSelectionChange={(keys) => {
+                              if (keys === "all") return;
+                              const first = Array.from(keys)[0];
+                              if (typeof first === "string") applyOperation(first as LetterCaseOperation);
+                            }}
+                          >
+                            {OPERATION_GROUPS.map((group) => (
+                              <DropdownSection key={group.title} title={group.title} showDivider>
+                                {group.operations.map((op) => (
+                                  <DropdownItem key={op} description={OPERATION_HELP[op].description}>
                                     {OPERATION_SHORT_LABEL[op]}
-                                  </Button>
-                                );
-                              })}
-                            </ButtonGroup>
-                          ))}
-                        </div>
-                      </div>
+                                  </DropdownItem>
+                                ))}
+                              </DropdownSection>
+                            ))}
+                          </DropdownMenu>
+                        </Dropdown>
+                      </ButtonGroup>
 
                       <div className="help-card">
                         <div className="help-card-title">当前操作：{operationHelp.title}</div>
