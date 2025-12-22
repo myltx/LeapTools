@@ -7,65 +7,109 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Chip,
   Input,
-  Spacer,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow
+  Spacer
 } from "@nextui-org/react";
 
 export default function Page() {
-  const tools = [
-    { slug: "regex", title: "正则调试", description: "快速测试表达式与匹配结果。", cta: "打开" },
-    { slug: "sql", title: "SQL 格式化", description: "一键格式化与整理 SQL。", cta: "打开" },
-    { slug: "json", title: "JSON 处理", description: "格式化、压缩、排序与校验。", cta: "打开" },
-    { slug: "letter-case", title: "大小写转换", description: "英文大小写与格式互转。", cta: "打开" },
-    { slug: "image", title: "图片压缩", description: "批量压缩与导出图片。", cta: "打开" },
-    { slug: "admin", title: "管理台", description: "站点管理与配置入口。", cta: "进入" }
-  ] as const;
+  type Tool = {
+    slug: string;
+    title: string;
+    description: string;
+    cta: string;
+    icon: string;
+    tag?: string;
+  };
 
-  const grid = [tools.slice(0, 3), tools.slice(3, 6)] as const;
+  const tools: Tool[] = [
+    {
+      slug: "json",
+      title: "JSON 工作台",
+      description: "支持格式化、语法验证与结构预览，适配大文本处理。",
+      cta: "进入工作台",
+      icon: "JSON",
+      tag: "核心"
+    },
+    {
+      slug: "image",
+      title: "无损图片压缩",
+      description: "本地侧高效压缩，批量导出与尺寸信息预览。",
+      cta: "立即运行",
+      icon: "IMG",
+      tag: "媒体"
+    },
+    {
+      slug: "regex",
+      title: "正则解释器",
+      description: "调试表达式、查看匹配结果，并快速验证输入样本。",
+      cta: "开始调试",
+      icon: "AI",
+      tag: "BETA"
+    },
+    {
+      slug: "sql",
+      title: "SQL 格式化",
+      description: "统一格式、清理缩进、快速可读化复杂 SQL。",
+      cta: "打开",
+      icon: "SQL"
+    },
+    {
+      slug: "letter-case",
+      title: "大小写转换",
+      description: "英文大小写与命名格式互转（camel/snake/kebab）。",
+      cta: "打开",
+      icon: "Aa"
+    },
+    {
+      slug: "admin",
+      title: "管理台",
+      description: "站点配置、工具管理、权限与发布流程入口。",
+      cta: "进入",
+      icon: "ADM"
+    }
+  ];
 
   return (
     <>
-      <Card>
-        <CardHeader>工具工作台</CardHeader>
+      <Card shadow="sm">
+        <CardHeader>所有工具</CardHeader>
         <CardBody>
-          <Input label="筛选工具" placeholder="输入关键词" />
+          <Input label="搜索工具" placeholder="例如：JSON / SQL / Regex" variant="bordered" />
         </CardBody>
       </Card>
 
       <Spacer y={1} />
 
-      <Table aria-label="工具列表">
-        <TableHeader>
-          <TableColumn>工具</TableColumn>
-          <TableColumn>工具</TableColumn>
-          <TableColumn>工具</TableColumn>
-        </TableHeader>
-        <TableBody>
-          {grid.map((row, idx) => (
-            <TableRow key={String(idx)}>
-              {row.map((t) => (
-                <TableCell key={t.slug}>
-                  <Card>
-                    <CardHeader>{t.title}</CardHeader>
-                    <CardBody>{t.description}</CardBody>
-                    <CardFooter>
-                      <Button as={NextLink} href={`/tools/${t.slug}`} color="primary">
-                        {t.cta}
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <div className="nt-grid">
+        {tools.map((t) => (
+          <Card
+            key={t.slug}
+            isHoverable
+            isPressable
+            shadow="sm"
+            onPress={() => {}}
+          >
+            <CardHeader className="nt-tool-head">
+              <div className="nt-tool-meta">
+                <div className="nt-tool-icon">{t.icon}</div>
+                {t.tag ? (
+                  <Chip size="sm" variant="flat">
+                    {t.tag}
+                  </Chip>
+                ) : null}
+              </div>
+              <div className="nt-tool-title">{t.title}</div>
+            </CardHeader>
+            <CardBody>{t.description}</CardBody>
+            <CardFooter>
+              <Button as={NextLink} href={`/tools/${t.slug}`} color="primary">
+                {t.cta}
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
     </>
   );
 }

@@ -2,3 +2,119 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --nt-sidebar-width: 240px;
+  --bg-app: #fcfcfc;
+  --bg-sidebar: #f7f7f8;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  font-family: var(--font-sans);
+  background: var(--bg-app);
+}
+
+.nt-shell {
+  height: 100dvh;
+}
+
+.nt-body {
+  display: grid;
+  grid-template-columns: var(--nt-sidebar-width) minmax(0, 1fr);
+  height: calc(100dvh - 64px);
+}
+
+.nt-sidebar {
+  padding: 16px 8px;
+  overflow: hidden;
+  background: var(--bg-sidebar);
+  border-right: 1px solid hsl(var(--nextui-divider));
+}
+
+.nt-side-card + .nt-side-card {
+  margin-top: 12px;
+}
+
+.nt-side-header {
+  font-size: 12px;
+}
+
+.nt-main {
+  overflow: auto;
+  padding: 24px;
+  background: var(--bg-app);
+}
+
+.nt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.nt-tool-head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nt-tool-meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nt-tool-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.nt-tool-title {
+  font-weight: 700;
+}
+
+.nt-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.nt-toolbar-left {
+  display: grid;
+  gap: 4px;
+}
+
+.nt-toolbar-title {
+  font-weight: 700;
+}
+
+.nt-toolbar-sub {
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+.nt-workspace {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  height: calc(100dvh - 64px - 24px - 24px);
+}
+
+.nt-panel {
+  grid-row: 1 / -1;
+}
+
+.nt-editor {
+  overflow: hidden;
+}
