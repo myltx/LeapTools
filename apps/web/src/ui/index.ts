@@ -13,6 +13,9 @@ export type {
   DropdownTriggerProps
 } from "./dropdown";
 
+export { Tooltip } from "./tooltip";
+export type { TooltipProps } from "./tooltip";
+
 export { ButtonLink } from "./button-link";
 export type { ButtonLinkProps } from "./button-link";
 

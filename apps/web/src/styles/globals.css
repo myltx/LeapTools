@@ -108,8 +108,8 @@ a:not([class]) {
 /* 核心布局 */
 .app-shell {
   display: grid;
-  grid-template-columns: clamp(200px, 22vw, 240px) 1fr;
-  grid-template-rows: 56px 1fr;
+  grid-template-columns: clamp(200px, 22vw, 240px) minmax(0, 1fr);
+  grid-template-rows: 56px minmax(0, 1fr);
   height: 100dvh;
   min-height: 0;
 }
@@ -280,8 +280,10 @@ a:not([class]) {
 
 /* 主内容区域 */
 .app-main {
+  display: flex;
   overflow: hidden;
   background: var(--bg-app);
+  height: 100%;
   min-height: 0;
 }
 
@@ -294,6 +296,8 @@ a:not([class]) {
   display: flex;
   flex-direction: column;
   padding: var(--page-pad);
+  flex: 1;
+  height: 100%;
   min-height: 0;
   animation: slideUp 220ms cubic-bezier(0.2, 0, 0, 1);
 }
@@ -486,9 +490,26 @@ a:not([class]) {
 .workspace-content {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(240px, 280px) 1fr;
+  grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
   overflow: hidden;
+  height: 100%;
   min-height: 0;
+}
+
+.lettercase-content {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.lettercase-content > * {
+  min-height: 0;
+}
+
+.lettercase-content .control-panel {
+  height: 100%;
+}
+
+.lettercase-content .lettercase-editor {
+  height: 100%;
 }
 
 /* 参数控制面板 */
@@ -500,6 +521,7 @@ a:not([class]) {
   flex-direction: column;
   gap: 20px;
   overflow: auto;
+  min-height: 0;
   scrollbar-gutter: stable;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
@@ -579,6 +601,7 @@ a:not([class]) {
 .lettercase-editor {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr;
+  min-height: 0;
 }
 
 .lettercase-editor .editor-container {
@@ -697,9 +720,33 @@ a:not([class]) {
   color: var(--text-secondary);
 }
 
-.operation-split {
-  width: 100%;
+.operation-sections {
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.operation-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.operation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.operation-button {
+  justify-content: center;
+  padding-left: 8px;
+  padding-right: 8px;
+  white-space: nowrap;
 }
 
 .result-view {

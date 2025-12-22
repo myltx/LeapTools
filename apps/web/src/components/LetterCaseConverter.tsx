@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Accordion, Button, ButtonGroup, Checkbox, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, Tabs, Textarea } from "@/ui";
+import { Accordion, Button, Checkbox, Tabs, Textarea, Tooltip } from "@/ui";
 
 /**
  * 转换类型（与需求里的 key 保持一致，方便后续接入配置/埋点/快捷键等）。
@@ -229,17 +229,6 @@ const OPERATION_SHORT_LABEL: Record<LetterCaseOperation, string> = {
   del_blank: "删空白",
   del_linebreak: "删换行"
 };
-
-function ChevronDownIcon() {
-  return (
-    <svg fill="none" height="14" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M17.9188 8.17969H11.6888H6.07877C5.11877 8.17969 4.63877 9.33969 5.31877 10.0197L10.4988 15.1997C11.3288 16.0297 12.6788 16.0297 13.5088 15.1997L15.4788 13.2297L18.6888 10.0197C19.3588 9.33969 18.8788 8.17969 17.9188 8.17969Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
 
 /**
  * 将自定义词库解析为「规范写法」数组：
@@ -694,7 +683,7 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
           <div className="workspace-version">{clipboardHint || "Ready"}</div>
         </div>
 
-        <div className="workspace-content">
+        <div className="workspace-content lettercase-content">
           <aside className="control-panel">
             <Tabs
               selectedKey={panelTab}
@@ -706,39 +695,39 @@ export function LetterCaseConverter(props: LetterCaseConverterProps) {
                   content: (
                     <div className="control-group">
                       <label>转换操作</label>
-                      <ButtonGroup className="operation-split" size="sm" radius="sm" variant="flat">
-                        <Button type="button" variant="secondary" appearance="flat" size="sm">
-                          {OPERATION_SHORT_LABEL[operation]}
-                        </Button>
-                        <Dropdown placement="bottom-end">
-                          <DropdownTrigger>
-                            <Button type="button" variant="secondary" appearance="flat" size="sm" iconOnly aria-label="选择转换操作">
-                              <ChevronDownIcon />
-                            </Button>
-                          </DropdownTrigger>
-                          <DropdownMenu
-                            disallowEmptySelection
-                            aria-label="转换操作"
-                            selectionMode="single"
-                            selectedKeys={new Set([operation])}
-                            onSelectionChange={(keys) => {
-                              if (keys === "all") return;
-                              const first = Array.from(keys)[0];
-                              if (typeof first === "string") applyOperation(first as LetterCaseOperation);
-                            }}
-                          >
-                            {OPERATION_GROUPS.map((group) => (
-                              <DropdownSection key={group.title} title={group.title} showDivider>
-                                {group.operations.map((op) => (
-                                  <DropdownItem key={op} description={OPERATION_HELP[op].description}>
-                                    {OPERATION_SHORT_LABEL[op]}
-                                  </DropdownItem>
-                                ))}
-                              </DropdownSection>
-                            ))}
-                          </DropdownMenu>
-                        </Dropdown>
-                      </ButtonGroup>
+                      <div className="operation-sections">
+                        {OPERATION_GROUPS.map((group) => (
+                          <div key={group.title} className="operation-section">
+                            <div className="operation-section-title">{group.title}</div>
+                            <div className="operation-grid">
+                              {group.operations.map((op) => {
+                                const selected = op === operation;
+                                const help = OPERATION_HELP[op];
+                                return (
+                                  <Tooltip
+                                    key={op}
+                                    content={`${help.title}：${help.description}`}
+                                    placement="right"
+                                    delay={220}
+                                    closeDelay={80}
+                                  >
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      className="operation-button"
+                                      variant={selected ? "primary" : "secondary"}
+                                      appearance={selected ? "solid" : "bordered"}
+                                      onClick={() => applyOperation(op)}
+                                    >
+                                      {OPERATION_SHORT_LABEL[op]}
+                                    </Button>
+                                  </Tooltip>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
 
                       <div className="help-card">
                         <div className="help-card-title">当前操作：{operationHelp.title}</div>
